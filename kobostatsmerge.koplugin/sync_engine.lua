@@ -362,6 +362,46 @@ local function extract_kobo_intervals(events_by_cid, cids, target_delta_sec, fir
         sum_sec = sum_sec + dur
     end
 
+    -- If extracted views total less than target_delta_sec, adjust chunks up to 120s limit
+    if #deduped > 0 and target_delta_sec and target_delta_sec > sum_sec then
+        local diff = target_delta_sec - sum_sec
+        local per_chunk = math.floor(diff / #deduped)
+        local remainder = diff % #deduped
+        for i = 1, #deduped do
+            local inc = per_chunk + (i <= remainder and 1 or 0)
+            local can_add = math.min(inc, 120 - deduped[i][2])
+            if can_add > 0 then
+                deduped[i][2] = deduped[i][2] + can_add
+                diff = diff - can_add
+                sum_sec = sum_sec + can_add
+            end
+        end
+        if diff > 0 then
+            for i = 1, #deduped do
+                if diff <= 0 then break end
+                local can_add = math.min(diff, 120 - deduped[i][2])
+                if can_add > 0 then
+                    deduped[i][2] = deduped[i][2] + can_add
+                    diff = diff - can_add
+                    sum_sec = sum_sec + can_add
+                end
+            end
+        end
+        if diff > 0 then
+            local cur_t = max_seen_ts + 1
+            while diff > 0 do
+                local ch = math.min(diff, max_chunk)
+                while seen_ts[cur_t] do cur_t = cur_t + 1 end
+                seen_ts[cur_t] = true
+                deduped[#deduped + 1] = { cur_t, ch }
+                cur_t = cur_t + ch
+                diff = diff - ch
+                sum_sec = sum_sec + ch
+            end
+            max_seen_ts = cur_t
+        end
+    end
+
     -- Fallback if Kobo recorded reading seconds without 1020/1021 timestamps (e.g. PDF or preview)
     if #deduped == 0 and target_delta_sec and target_delta_sec > 0 then
         local last_ts_val = iso_to_ts(last_iso) or iso_to_ts(first_iso) or os.time()
@@ -724,12 +764,16 @@ function SyncEngine.run_two_way_sync(opts)
                 end
                 local ev46 = events_by_cid[cid] and events_by_cid[cid][46]
                 local ev3 = events_by_cid[cid] and events_by_cid[cid][3]
+                local sec46 = ev46 and ev46.plain and tonumber(ev46.plain.ExtraDataReadingSeconds) or 0
+                local sec3 = ev3 and ev3.plain and tonumber(ev3.plain.ExtraDataReadingSeconds) or 0
+                local sec = math.max(sec46, sec3)
+                local sess46 = ev46 and ev46.plain and tonumber(ev46.plain.ExtraDataReadingSessions) or 0
+                local sess3 = ev3 and ev3.plain and tonumber(ev3.plain.ExtraDataReadingSessions) or 0
+                local sess = math.max(sess46, sess3)
+                event_sec_sum = event_sec_sum + sec
+                event_sess_sum = event_sess_sum + sess
                 local ev_use = ev46 or ev3
                 if ev_use and ev_use.plain then
-                    local sec = tonumber(ev_use.plain.ExtraDataReadingSeconds) or 0
-                    local sess = tonumber(ev_use.plain.ExtraDataReadingSessions) or 0
-                    event_sec_sum = event_sec_sum + sec
-                    event_sess_sum = event_sess_sum + sess
                     local dc = ev_use.plain.ExtraDataDateCreated
                     if dc and (not first_iso or dc < first_iso) then first_iso = dc end
                     if ev_use.lo and (not last_iso or ev_use.lo > last_iso) then last_iso = ev_use.lo end
@@ -788,8 +832,10 @@ function SyncEngine.run_two_way_sync(opts)
                     local new_id = tonumber(conn_ko:rowexec("SELECT last_insert_rowid();"))
 
                     local added_sec = 0
+                    local N = #views
                     for idx, v in ipairs(views) do
-                        local pg = math.min(total_pages, idx)
+                        local pg = (N > 1) and math.floor(1 + (idx - 1) * (total_pages - 1) / (N - 1) + 0.5) or 1
+                        pg = math.max(1, math.min(total_pages, pg))
                         stmt_ins_psd:reset():bind(new_id, pg, v[1], v[2], total_pages):step()
                         added_sec = added_sec + v[2]
                     end
@@ -812,11 +858,43 @@ function SyncEngine.run_two_way_sync(opts)
                         local views, _, seen_max = extract_kobo_intervals(events_by_cid, grp.cids, delta_kobo_sec, first_iso, last_iso, min_after)
                         if seen_max > grp.max_kobo_ts then grp.max_kobo_ts = seen_max end
 
+                        local existing_ranges = {}
+                        local stmt_ex = conn_ko:prepare("SELECT start_time, duration FROM page_stat_data WHERE id_book = ?;")
+                        stmt_ex:bind(ko_book.id)
+                        for row_ex in stmt_ex:rows() do
+                            local st_ex = tonumber(row_ex[1])
+                            local dur_ex = tonumber(row_ex[2]) or 0
+                            existing_ranges[#existing_ranges + 1] = { st_ex, st_ex + dur_ex }
+                        end
+                        stmt_ex:close()
+
+                        local function interval_collides(st, dur)
+                            local et = st + dur
+                            for _, rng in ipairs(existing_ranges) do
+                                if st < rng[2] and et > rng[1] then
+                                    return true
+                                end
+                            end
+                            return false
+                        end
+
+                        local valid_views = {}
+                        for _, v in ipairs(views) do
+                            if not interval_collides(v[1], v[2]) then
+                                valid_views[#valid_views + 1] = v
+                            end
+                        end
+
                         local total_pages = math.max(1, ko_book.pages)
                         local cur_read_p = math.max(1, ko_book.total_read_pages)
+                        local start_p = math.min(total_pages, cur_read_p + 1)
+                        local end_p = total_pages
+                        local span = end_p - start_p
+                        local N = #valid_views
                         local added_sec = 0
-                        for idx, v in ipairs(views) do
-                            local pg = math.min(total_pages, cur_read_p + idx - 1)
+                        for idx, v in ipairs(valid_views) do
+                            local pg = (span > 0 and N > 1) and math.floor(start_p + (idx - 1) * span / (N - 1) + 0.5) or start_p
+                            pg = math.max(start_p, math.min(end_p, pg))
                             stmt_ins_psd:reset():bind(ko_book.id, pg, v[1], v[2], total_pages):step()
                             added_sec = added_sec + v[2]
                         end
@@ -830,29 +908,62 @@ function SyncEngine.run_two_way_sync(opts)
                     local views, _, seen_max = extract_kobo_intervals(events_by_cid, grp.cids, kobo_auth_sec, first_iso, last_iso, 0)
                     if seen_max > grp.max_kobo_ts then grp.max_kobo_ts = seen_max end
                     if #views > 0 then
-                        local min_v_ts = views[1][1]
-                        local max_v_ts = views[#views][1] + views[#views][2]
-                        local stmt_chk = conn_ko:prepare([[
-                            SELECT count(*) FROM page_stat_data
-                            WHERE id_book = ? AND start_time BETWEEN ? AND ?;
-                        ]])
-                        stmt_chk:bind(ko_book.id, min_v_ts - 60, max_v_ts + 60)
-                        local r_chk = stmt_chk:step()
-                        local overlap_cnt = r_chk and tonumber(r_chk[1]) or 0
-                        stmt_chk:close()
+                        local existing_ranges = {}
+                        local min_p, max_p = nil, nil
+                        local stmt_ex = conn_ko:prepare("SELECT start_time, duration, page FROM page_stat_data WHERE id_book = ?;")
+                        stmt_ex:bind(ko_book.id)
+                        for row_ex in stmt_ex:rows() do
+                            local st_ex = tonumber(row_ex[1])
+                            local dur_ex = tonumber(row_ex[2]) or 0
+                            local p_ex = tonumber(row_ex[3])
+                            existing_ranges[#existing_ranges + 1] = { st_ex, st_ex + dur_ex }
+                            if p_ex and p_ex > 0 then
+                                if not min_p or p_ex < min_p then min_p = p_ex end
+                                if not max_p or p_ex > max_p then max_p = p_ex end
+                            end
+                        end
+                        stmt_ex:close()
 
-                        if overlap_cnt == 0 then
-                            local total_pages = math.max(1, ko_book.pages)
-                            local added_sec = 0
-                            for idx, v in ipairs(views) do
-                                local pg = math.min(total_pages, idx)
-                                stmt_ins_psd:reset():bind(ko_book.id, pg, v[1], v[2], total_pages):step()
-                                added_sec = added_sec + v[2]
+                        local function interval_collides(st, dur)
+                            local et = st + dur
+                            for _, rng in ipairs(existing_ranges) do
+                                if st < rng[2] and et > rng[1] then
+                                    return true
+                                end
                             end
-                            if added_sec > 0 then
-                                stats_summary.kobo_to_ko_books = stats_summary.kobo_to_ko_books + 1
-                                stats_summary.kobo_to_ko_seconds = stats_summary.kobo_to_ko_seconds + added_sec
+                            return false
+                        end
+
+                        local valid_views = {}
+                        for _, v in ipairs(views) do
+                            if not interval_collides(v[1], v[2]) then
+                                valid_views[#valid_views + 1] = v
                             end
+                        end
+
+                        local total_pages = math.max(1, ko_book.pages)
+                        local start_p, end_p
+                        if min_p and min_p > 10 and min_p > (total_pages * 0.1) then
+                            -- KOReader reading started deep in the book (e.g. finished 2nd half);
+                            -- assign Kobo's preceding reading to unread pages 1 .. (min_p - 1)
+                            start_p = 1
+                            end_p = min_p - 1
+                        else
+                            start_p = 1
+                            end_p = total_pages
+                        end
+                        local span = end_p - start_p
+                        local N = #valid_views
+                        local added_sec = 0
+                        for idx, v in ipairs(valid_views) do
+                            local pg = (span > 0 and N > 1) and math.floor(start_p + (idx - 1) * span / (N - 1) + 0.5) or start_p
+                            pg = math.max(start_p, math.min(end_p, pg))
+                            stmt_ins_psd:reset():bind(ko_book.id, pg, v[1], v[2], total_pages):step()
+                            added_sec = added_sec + v[2]
+                        end
+                        if added_sec > 0 then
+                            stats_summary.kobo_to_ko_books = stats_summary.kobo_to_ko_books + 1
+                            stats_summary.kobo_to_ko_seconds = stats_summary.kobo_to_ko_seconds + added_sec
                         end
                     end
                 end
@@ -1026,7 +1137,7 @@ function SyncEngine.run_two_way_sync(opts)
                 end
 
                 -- Never decrease reading time: take MAX of KOReader unified time and Kobo content/Event time
-                local unified_sec = b.total_read_time
+                local unified_sec = math.max(b.total_read_time, (grp and grp.kobo_auth_sec) or 0)
                 local unified_sess = math.max(#sess_opens, (grp and grp.kobo_auth_sess) or 1, (kc and kc.times_started) or 1)
 
                 local ko_pct = 0
