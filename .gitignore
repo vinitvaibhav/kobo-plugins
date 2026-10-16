@@ -25,3 +25,8 @@ kobo_stats_sync_state.lua
 work/
 scratch/
 backups/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

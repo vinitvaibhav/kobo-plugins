@@ -9,6 +9,7 @@ A curated collection of production-ready plugins, automation tools, and utilitie
 | Plugin | Path | Description | Status |
 | :--- | :--- | :--- | :--- |
 | **`kobostatsmerge.koplugin`** | [`kobostatsmerge.koplugin/`](kobostatsmerge.koplugin/) | **Seamless 2-Way Reading Stats Synchronization** between KOReader and Kobo Stock App (Nickel). Unifies reading hours, sessions, and activity stats across all supported formats with full database safety nets. | ✅ **Active** |
+| **`twixtle`** | [`twixtle/`](twixtle/) | **Offline Word Chain Game for Kobo** (Carta 1300 E-Ink optimized). 550 verified progressive levels with NickelMenu integration, on-screen touch keyboard, zero battery drain. | ✅ **Active** |
 
 ---
 
@@ -66,6 +67,15 @@ kobo-plugins/
 │   ├── qvariant.lua                 # Qt binary QVariantMap codec & MD5 checksum engine
 │   ├── sync_engine.lua              # Bidirectional synchronization engine
 │   └── README.md                    # In-depth technical documentation
+├── twixtle/                         # Offline Word Chain Game for Kobo (Carta 1300 E-Ink)
+│   ├── index.html                   # High-contrast E-Ink application shell
+│   ├── app.css                      # Monochrome stylesheet (zero transitions/flicker)
+│   ├── app.js                       # Game engine, move validator & on-screen keyboard
+│   ├── puzzles.js                   # 550 verified progressive offline puzzles
+│   ├── install.sh                   # 1-click deployment & NickelMenu setup
+│   ├── dict/                        # Offline English dictionaries (verbs, compounds, homophones)
+│   ├── tools/                       # Puzzle harvesting, solving & test verification tools
+│   └── README.md                    # Detailed game instructions & manual setup
 ├── tests/                           # LuaJIT unit & end-to-end test suite
 │   └── test_sync_engine.lua
 ├── install.sh                       # One-command installer for connected Kobo devices

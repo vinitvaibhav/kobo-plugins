@@ -1,0 +1,1917 @@
+{
+  "_comment": "Each row: base / simple past / past participle / -ing / third person singular. The tense validator treats a, b as tense-related if both appear among any row's five forms.",
+  "verbs": [
+    {
+      "base": "abide",
+      "past": "abode",
+      "pastp": "abode",
+      "ing": "abiding",
+      "third": "abides"
+    },
+    {
+      "base": "arise",
+      "past": "arose",
+      "pastp": "arisen",
+      "ing": "arising",
+      "third": "arises"
+    },
+    {
+      "base": "awake",
+      "past": "awoke",
+      "pastp": "awoken",
+      "ing": "awaking",
+      "third": "awakes"
+    },
+    {
+      "base": "backbite",
+      "past": "backbit",
+      "pastp": "backbitten",
+      "ing": "backbiting",
+      "third": "backbites"
+    },
+    {
+      "base": "be",
+      "past": "was",
+      "pastp": "been",
+      "ing": "being",
+      "third": "is"
+    },
+    {
+      "base": "be",
+      "past": "was",
+      "pastp": "been",
+      "ing": "being",
+      "third": "am"
+    },
+    {
+      "base": "be",
+      "past": "were",
+      "pastp": "been",
+      "ing": "being",
+      "third": "are"
+    },
+    {
+      "base": "bear",
+      "past": "bore",
+      "pastp": "borne",
+      "ing": "bearing",
+      "third": "bears"
+    },
+    {
+      "base": "beat",
+      "past": "beat",
+      "pastp": "beaten",
+      "ing": "beating",
+      "third": "beats"
+    },
+    {
+      "base": "become",
+      "past": "became",
+      "pastp": "become",
+      "ing": "becoming",
+      "third": "becomes"
+    },
+    {
+      "base": "befall",
+      "past": "befell",
+      "pastp": "befallen",
+      "ing": "befalling",
+      "third": "befalls"
+    },
+    {
+      "base": "beget",
+      "past": "begot",
+      "pastp": "begotten",
+      "ing": "begetting",
+      "third": "begets"
+    },
+    {
+      "base": "begin",
+      "past": "began",
+      "pastp": "begun",
+      "ing": "beginning",
+      "third": "begins"
+    },
+    {
+      "base": "behold",
+      "past": "beheld",
+      "pastp": "beheld",
+      "ing": "beholding",
+      "third": "beholds"
+    },
+    {
+      "base": "bend",
+      "past": "bent",
+      "pastp": "bent",
+      "ing": "bending",
+      "third": "bends"
+    },
+    {
+      "base": "beset",
+      "past": "beset",
+      "pastp": "beset",
+      "ing": "besetting",
+      "third": "besets"
+    },
+    {
+      "base": "bespeak",
+      "past": "bespoke",
+      "pastp": "bespoken",
+      "ing": "bespeaking",
+      "third": "bespeaks"
+    },
+    {
+      "base": "bet",
+      "past": "bet",
+      "pastp": "bet",
+      "ing": "betting",
+      "third": "bets"
+    },
+    {
+      "base": "bid",
+      "past": "bid",
+      "pastp": "bid",
+      "ing": "bidding",
+      "third": "bids"
+    },
+    {
+      "base": "bind",
+      "past": "bound",
+      "pastp": "bound",
+      "ing": "binding",
+      "third": "binds"
+    },
+    {
+      "base": "bite",
+      "past": "bit",
+      "pastp": "bitten",
+      "ing": "biting",
+      "third": "bites"
+    },
+    {
+      "base": "bleed",
+      "past": "bled",
+      "pastp": "bled",
+      "ing": "bleeding",
+      "third": "bleeds"
+    },
+    {
+      "base": "blow",
+      "past": "blew",
+      "pastp": "blown",
+      "ing": "blowing",
+      "third": "blows"
+    },
+    {
+      "base": "break",
+      "past": "broke",
+      "pastp": "broken",
+      "ing": "breaking",
+      "third": "breaks"
+    },
+    {
+      "base": "breed",
+      "past": "bred",
+      "pastp": "bred",
+      "ing": "breeding",
+      "third": "breeds"
+    },
+    {
+      "base": "bring",
+      "past": "brought",
+      "pastp": "brought",
+      "ing": "bringing",
+      "third": "brings"
+    },
+    {
+      "base": "broadcast",
+      "past": "broadcast",
+      "pastp": "broadcast",
+      "ing": "broadcasting",
+      "third": "broadcasts"
+    },
+    {
+      "base": "build",
+      "past": "built",
+      "pastp": "built",
+      "ing": "building",
+      "third": "builds"
+    },
+    {
+      "base": "burn",
+      "past": "burnt",
+      "pastp": "burnt",
+      "ing": "burning",
+      "third": "burns"
+    },
+    {
+      "base": "burst",
+      "past": "burst",
+      "pastp": "burst",
+      "ing": "bursting",
+      "third": "bursts"
+    },
+    {
+      "base": "buy",
+      "past": "bought",
+      "pastp": "bought",
+      "ing": "buying",
+      "third": "buys"
+    },
+    {
+      "base": "cast",
+      "past": "cast",
+      "pastp": "cast",
+      "ing": "casting",
+      "third": "casts"
+    },
+    {
+      "base": "catch",
+      "past": "caught",
+      "pastp": "caught",
+      "ing": "catching",
+      "third": "catches"
+    },
+    {
+      "base": "choose",
+      "past": "chose",
+      "pastp": "chosen",
+      "ing": "choosing",
+      "third": "chooses"
+    },
+    {
+      "base": "cleave",
+      "past": "cleft",
+      "pastp": "cleft",
+      "ing": "cleaving",
+      "third": "cleaves"
+    },
+    {
+      "base": "cling",
+      "past": "clung",
+      "pastp": "clung",
+      "ing": "clinging",
+      "third": "clings"
+    },
+    {
+      "base": "clothe",
+      "past": "clad",
+      "pastp": "clad",
+      "ing": "clothing",
+      "third": "clothes"
+    },
+    {
+      "base": "come",
+      "past": "came",
+      "pastp": "come",
+      "ing": "coming",
+      "third": "comes"
+    },
+    {
+      "base": "cost",
+      "past": "cost",
+      "pastp": "cost",
+      "ing": "costing",
+      "third": "costs"
+    },
+    {
+      "base": "creep",
+      "past": "crept",
+      "pastp": "crept",
+      "ing": "creeping",
+      "third": "creeps"
+    },
+    {
+      "base": "crosscut",
+      "past": "crosscut",
+      "pastp": "crosscut",
+      "ing": "crosscutting",
+      "third": "crosscuts"
+    },
+    {
+      "base": "crow",
+      "past": "crew",
+      "pastp": "crowed",
+      "ing": "crowing",
+      "third": "crows"
+    },
+    {
+      "base": "cut",
+      "past": "cut",
+      "pastp": "cut",
+      "ing": "cutting",
+      "third": "cuts"
+    },
+    {
+      "base": "dare",
+      "past": "durst",
+      "pastp": "dared",
+      "ing": "daring",
+      "third": "dares"
+    },
+    {
+      "base": "deal",
+      "past": "dealt",
+      "pastp": "dealt",
+      "ing": "dealing",
+      "third": "deals"
+    },
+    {
+      "base": "dig",
+      "past": "dug",
+      "pastp": "dug",
+      "ing": "digging",
+      "third": "digs"
+    },
+    {
+      "base": "dive",
+      "past": "dove",
+      "pastp": "dived",
+      "ing": "diving",
+      "third": "dives"
+    },
+    {
+      "base": "do",
+      "past": "did",
+      "pastp": "done",
+      "ing": "doing",
+      "third": "does"
+    },
+    {
+      "base": "draw",
+      "past": "drew",
+      "pastp": "drawn",
+      "ing": "drawing",
+      "third": "draws"
+    },
+    {
+      "base": "dream",
+      "past": "dreamt",
+      "pastp": "dreamt",
+      "ing": "dreaming",
+      "third": "dreams"
+    },
+    {
+      "base": "drink",
+      "past": "drank",
+      "pastp": "drunk",
+      "ing": "drinking",
+      "third": "drinks"
+    },
+    {
+      "base": "drive",
+      "past": "drove",
+      "pastp": "driven",
+      "ing": "driving",
+      "third": "drives"
+    },
+    {
+      "base": "dwell",
+      "past": "dwelt",
+      "pastp": "dwelt",
+      "ing": "dwelling",
+      "third": "dwells"
+    },
+    {
+      "base": "eat",
+      "past": "ate",
+      "pastp": "eaten",
+      "ing": "eating",
+      "third": "eats"
+    },
+    {
+      "base": "fall",
+      "past": "fell",
+      "pastp": "fallen",
+      "ing": "falling",
+      "third": "falls"
+    },
+    {
+      "base": "feed",
+      "past": "fed",
+      "pastp": "fed",
+      "ing": "feeding",
+      "third": "feeds"
+    },
+    {
+      "base": "feel",
+      "past": "felt",
+      "pastp": "felt",
+      "ing": "feeling",
+      "third": "feels"
+    },
+    {
+      "base": "fight",
+      "past": "fought",
+      "pastp": "fought",
+      "ing": "fighting",
+      "third": "fights"
+    },
+    {
+      "base": "find",
+      "past": "found",
+      "pastp": "found",
+      "ing": "finding",
+      "third": "finds"
+    },
+    {
+      "base": "fit",
+      "past": "fit",
+      "pastp": "fit",
+      "ing": "fitting",
+      "third": "fits"
+    },
+    {
+      "base": "flee",
+      "past": "fled",
+      "pastp": "fled",
+      "ing": "fleeing",
+      "third": "flees"
+    },
+    {
+      "base": "fling",
+      "past": "flung",
+      "pastp": "flung",
+      "ing": "flinging",
+      "third": "flings"
+    },
+    {
+      "base": "fly",
+      "past": "flew",
+      "pastp": "flown",
+      "ing": "flying",
+      "third": "flies"
+    },
+    {
+      "base": "forbid",
+      "past": "forbade",
+      "pastp": "forbidden",
+      "ing": "forbidding",
+      "third": "forbids"
+    },
+    {
+      "base": "forecast",
+      "past": "forecast",
+      "pastp": "forecast",
+      "ing": "forecasting",
+      "third": "forecasts"
+    },
+    {
+      "base": "foreknow",
+      "past": "foreknew",
+      "pastp": "foreknown",
+      "ing": "foreknowing",
+      "third": "foreknows"
+    },
+    {
+      "base": "foresee",
+      "past": "foresaw",
+      "pastp": "foreseen",
+      "ing": "foreseeing",
+      "third": "foresees"
+    },
+    {
+      "base": "foretell",
+      "past": "foretold",
+      "pastp": "foretold",
+      "ing": "foretelling",
+      "third": "foretells"
+    },
+    {
+      "base": "forget",
+      "past": "forgot",
+      "pastp": "forgotten",
+      "ing": "forgetting",
+      "third": "forgets"
+    },
+    {
+      "base": "forgive",
+      "past": "forgave",
+      "pastp": "forgiven",
+      "ing": "forgiving",
+      "third": "forgives"
+    },
+    {
+      "base": "forgo",
+      "past": "forwent",
+      "pastp": "forgone",
+      "ing": "forgoing",
+      "third": "forgoes"
+    },
+    {
+      "base": "forsake",
+      "past": "forsook",
+      "pastp": "forsaken",
+      "ing": "forsaking",
+      "third": "forsakes"
+    },
+    {
+      "base": "forswear",
+      "past": "forswore",
+      "pastp": "forsworn",
+      "ing": "forswearing",
+      "third": "forswears"
+    },
+    {
+      "base": "freeze",
+      "past": "froze",
+      "pastp": "frozen",
+      "ing": "freezing",
+      "third": "freezes"
+    },
+    {
+      "base": "gainsay",
+      "past": "gainsaid",
+      "pastp": "gainsaid",
+      "ing": "gainsaying",
+      "third": "gainsays"
+    },
+    {
+      "base": "get",
+      "past": "got",
+      "pastp": "gotten",
+      "ing": "getting",
+      "third": "gets"
+    },
+    {
+      "base": "gild",
+      "past": "gilt",
+      "pastp": "gilt",
+      "ing": "gilding",
+      "third": "gilds"
+    },
+    {
+      "base": "gird",
+      "past": "girt",
+      "pastp": "girt",
+      "ing": "girding",
+      "third": "girds"
+    },
+    {
+      "base": "give",
+      "past": "gave",
+      "pastp": "given",
+      "ing": "giving",
+      "third": "gives"
+    },
+    {
+      "base": "go",
+      "past": "went",
+      "pastp": "gone",
+      "ing": "going",
+      "third": "goes"
+    },
+    {
+      "base": "grind",
+      "past": "ground",
+      "pastp": "ground",
+      "ing": "grinding",
+      "third": "grinds"
+    },
+    {
+      "base": "grow",
+      "past": "grew",
+      "pastp": "grown",
+      "ing": "growing",
+      "third": "grows"
+    },
+    {
+      "base": "hamstring",
+      "past": "hamstrung",
+      "pastp": "hamstrung",
+      "ing": "hamstringing",
+      "third": "hamstrings"
+    },
+    {
+      "base": "hang",
+      "past": "hung",
+      "pastp": "hung",
+      "ing": "hanging",
+      "third": "hangs"
+    },
+    {
+      "base": "have",
+      "past": "had",
+      "pastp": "had",
+      "ing": "having",
+      "third": "has"
+    },
+    {
+      "base": "hear",
+      "past": "heard",
+      "pastp": "heard",
+      "ing": "hearing",
+      "third": "hears"
+    },
+    {
+      "base": "hide",
+      "past": "hid",
+      "pastp": "hidden",
+      "ing": "hiding",
+      "third": "hides"
+    },
+    {
+      "base": "hit",
+      "past": "hit",
+      "pastp": "hit",
+      "ing": "hitting",
+      "third": "hits"
+    },
+    {
+      "base": "hold",
+      "past": "held",
+      "pastp": "held",
+      "ing": "holding",
+      "third": "holds"
+    },
+    {
+      "base": "hurt",
+      "past": "hurt",
+      "pastp": "hurt",
+      "ing": "hurting",
+      "third": "hurts"
+    },
+    {
+      "base": "inbreed",
+      "past": "inbred",
+      "pastp": "inbred",
+      "ing": "inbreeding",
+      "third": "inbreeds"
+    },
+    {
+      "base": "inlay",
+      "past": "inlaid",
+      "pastp": "inlaid",
+      "ing": "inlaying",
+      "third": "inlays"
+    },
+    {
+      "base": "input",
+      "past": "input",
+      "pastp": "input",
+      "ing": "inputting",
+      "third": "inputs"
+    },
+    {
+      "base": "interweave",
+      "past": "interwove",
+      "pastp": "interwoven",
+      "ing": "interweaving",
+      "third": "interweaves"
+    },
+    {
+      "base": "keep",
+      "past": "kept",
+      "pastp": "kept",
+      "ing": "keeping",
+      "third": "keeps"
+    },
+    {
+      "base": "kneel",
+      "past": "knelt",
+      "pastp": "knelt",
+      "ing": "kneeling",
+      "third": "kneels"
+    },
+    {
+      "base": "knit",
+      "past": "knit",
+      "pastp": "knit",
+      "ing": "knitting",
+      "third": "knits"
+    },
+    {
+      "base": "know",
+      "past": "knew",
+      "pastp": "known",
+      "ing": "knowing",
+      "third": "knows"
+    },
+    {
+      "base": "lay",
+      "past": "laid",
+      "pastp": "laid",
+      "ing": "laying",
+      "third": "lays"
+    },
+    {
+      "base": "lead",
+      "past": "led",
+      "pastp": "led",
+      "ing": "leading",
+      "third": "leads"
+    },
+    {
+      "base": "lean",
+      "past": "leant",
+      "pastp": "leant",
+      "ing": "leaning",
+      "third": "leans"
+    },
+    {
+      "base": "leap",
+      "past": "leapt",
+      "pastp": "leapt",
+      "ing": "leaping",
+      "third": "leaps"
+    },
+    {
+      "base": "learn",
+      "past": "learnt",
+      "pastp": "learnt",
+      "ing": "learning",
+      "third": "learns"
+    },
+    {
+      "base": "leave",
+      "past": "left",
+      "pastp": "left",
+      "ing": "leaving",
+      "third": "leaves"
+    },
+    {
+      "base": "lend",
+      "past": "lent",
+      "pastp": "lent",
+      "ing": "lending",
+      "third": "lends"
+    },
+    {
+      "base": "let",
+      "past": "let",
+      "pastp": "let",
+      "ing": "letting",
+      "third": "lets"
+    },
+    {
+      "base": "lie",
+      "past": "lay",
+      "pastp": "lain",
+      "ing": "lying",
+      "third": "lies"
+    },
+    {
+      "base": "light",
+      "past": "lit",
+      "pastp": "lit",
+      "ing": "lighting",
+      "third": "lights"
+    },
+    {
+      "base": "lose",
+      "past": "lost",
+      "pastp": "lost",
+      "ing": "losing",
+      "third": "loses"
+    },
+    {
+      "base": "make",
+      "past": "made",
+      "pastp": "made",
+      "ing": "making",
+      "third": "makes"
+    },
+    {
+      "base": "mean",
+      "past": "meant",
+      "pastp": "meant",
+      "ing": "meaning",
+      "third": "means"
+    },
+    {
+      "base": "meet",
+      "past": "met",
+      "pastp": "met",
+      "ing": "meeting",
+      "third": "meets"
+    },
+    {
+      "base": "miscast",
+      "past": "miscast",
+      "pastp": "miscast",
+      "ing": "miscasting",
+      "third": "miscasts"
+    },
+    {
+      "base": "mishear",
+      "past": "misheard",
+      "pastp": "misheard",
+      "ing": "mishearing",
+      "third": "mishears"
+    },
+    {
+      "base": "mislay",
+      "past": "mislaid",
+      "pastp": "mislaid",
+      "ing": "mislaying",
+      "third": "mislays"
+    },
+    {
+      "base": "mislead",
+      "past": "misled",
+      "pastp": "misled",
+      "ing": "misleading",
+      "third": "misleads"
+    },
+    {
+      "base": "misread",
+      "past": "misread",
+      "pastp": "misread",
+      "ing": "misreading",
+      "third": "misreads"
+    },
+    {
+      "base": "mistake",
+      "past": "mistook",
+      "pastp": "mistaken",
+      "ing": "mistaking",
+      "third": "mistakes"
+    },
+    {
+      "base": "offset",
+      "past": "offset",
+      "pastp": "offset",
+      "ing": "offsetting",
+      "third": "offsets"
+    },
+    {
+      "base": "ought",
+      "past": "ought",
+      "pastp": "ought",
+      "ing": "oughting",
+      "third": "oughts"
+    },
+    {
+      "base": "outbid",
+      "past": "outbid",
+      "pastp": "outbid",
+      "ing": "outbidding",
+      "third": "outbids"
+    },
+    {
+      "base": "outdo",
+      "past": "outdid",
+      "pastp": "outdone",
+      "ing": "outdoing",
+      "third": "outdoes"
+    },
+    {
+      "base": "outgrow",
+      "past": "outgrew",
+      "pastp": "outgrown",
+      "ing": "outgrowing",
+      "third": "outgrows"
+    },
+    {
+      "base": "outrun",
+      "past": "outran",
+      "pastp": "outrun",
+      "ing": "outrunning",
+      "third": "outruns"
+    },
+    {
+      "base": "outsell",
+      "past": "outsold",
+      "pastp": "outsold",
+      "ing": "outselling",
+      "third": "outsells"
+    },
+    {
+      "base": "outshine",
+      "past": "outshone",
+      "pastp": "outshone",
+      "ing": "outshining",
+      "third": "outshines"
+    },
+    {
+      "base": "outwear",
+      "past": "outwore",
+      "pastp": "outworn",
+      "ing": "outwearing",
+      "third": "outwears"
+    },
+    {
+      "base": "overbuild",
+      "past": "overbuilt",
+      "pastp": "overbuilt",
+      "ing": "overbuilding",
+      "third": "overbuilds"
+    },
+    {
+      "base": "overcome",
+      "past": "overcame",
+      "pastp": "overcome",
+      "ing": "overcoming",
+      "third": "overcomes"
+    },
+    {
+      "base": "overdo",
+      "past": "overdid",
+      "pastp": "overdone",
+      "ing": "overdoing",
+      "third": "overdoes"
+    },
+    {
+      "base": "overdraw",
+      "past": "overdrew",
+      "pastp": "overdrawn",
+      "ing": "overdrawing",
+      "third": "overdraws"
+    },
+    {
+      "base": "overeat",
+      "past": "overate",
+      "pastp": "overeaten",
+      "ing": "overeating",
+      "third": "overeats"
+    },
+    {
+      "base": "overfeed",
+      "past": "overfed",
+      "pastp": "overfed",
+      "ing": "overfeeding",
+      "third": "overfeeds"
+    },
+    {
+      "base": "overhang",
+      "past": "overhung",
+      "pastp": "overhung",
+      "ing": "overhanging",
+      "third": "overhangs"
+    },
+    {
+      "base": "overhear",
+      "past": "overheard",
+      "pastp": "overheard",
+      "ing": "overhearing",
+      "third": "overhears"
+    },
+    {
+      "base": "overlay",
+      "past": "overlaid",
+      "pastp": "overlaid",
+      "ing": "overlaying",
+      "third": "overlays"
+    },
+    {
+      "base": "overpay",
+      "past": "overpaid",
+      "pastp": "overpaid",
+      "ing": "overpaying",
+      "third": "overpays"
+    },
+    {
+      "base": "override",
+      "past": "overrode",
+      "pastp": "overridden",
+      "ing": "overriding",
+      "third": "overrides"
+    },
+    {
+      "base": "overrun",
+      "past": "overran",
+      "pastp": "overrun",
+      "ing": "overrunning",
+      "third": "overruns"
+    },
+    {
+      "base": "oversee",
+      "past": "oversaw",
+      "pastp": "overseen",
+      "ing": "overseeing",
+      "third": "oversees"
+    },
+    {
+      "base": "oversell",
+      "past": "oversold",
+      "pastp": "oversold",
+      "ing": "overselling",
+      "third": "oversells"
+    },
+    {
+      "base": "overshoot",
+      "past": "overshot",
+      "pastp": "overshot",
+      "ing": "overshooting",
+      "third": "overshoots"
+    },
+    {
+      "base": "oversleep",
+      "past": "overslept",
+      "pastp": "overslept",
+      "ing": "oversleeping",
+      "third": "oversleeps"
+    },
+    {
+      "base": "overspend",
+      "past": "overspent",
+      "pastp": "overspent",
+      "ing": "overspending",
+      "third": "overspends"
+    },
+    {
+      "base": "overtake",
+      "past": "overtook",
+      "pastp": "overtaken",
+      "ing": "overtaking",
+      "third": "overtakes"
+    },
+    {
+      "base": "overthrow",
+      "past": "overthrew",
+      "pastp": "overthrown",
+      "ing": "overthrowing",
+      "third": "overthrows"
+    },
+    {
+      "base": "overwrite",
+      "past": "overwrote",
+      "pastp": "overwritten",
+      "ing": "overwriting",
+      "third": "overwrites"
+    },
+    {
+      "base": "partake",
+      "past": "partook",
+      "pastp": "partaken",
+      "ing": "partaking",
+      "third": "partakes"
+    },
+    {
+      "base": "pay",
+      "past": "paid",
+      "pastp": "paid",
+      "ing": "paying",
+      "third": "pays"
+    },
+    {
+      "base": "preset",
+      "past": "preset",
+      "pastp": "preset",
+      "ing": "presetting",
+      "third": "presets"
+    },
+    {
+      "base": "proofread",
+      "past": "proofread",
+      "pastp": "proofread",
+      "ing": "proofreading",
+      "third": "proofreads"
+    },
+    {
+      "base": "prove",
+      "past": "proved",
+      "pastp": "proven",
+      "ing": "proving",
+      "third": "proves"
+    },
+    {
+      "base": "put",
+      "past": "put",
+      "pastp": "put",
+      "ing": "putting",
+      "third": "puts"
+    },
+    {
+      "base": "quit",
+      "past": "quit",
+      "pastp": "quit",
+      "ing": "quitting",
+      "third": "quits"
+    },
+    {
+      "base": "read",
+      "past": "read",
+      "pastp": "read",
+      "ing": "reading",
+      "third": "reads"
+    },
+    {
+      "base": "rebid",
+      "past": "rebid",
+      "pastp": "rebid",
+      "ing": "rebidding",
+      "third": "rebids"
+    },
+    {
+      "base": "rebind",
+      "past": "rebound",
+      "pastp": "rebound",
+      "ing": "rebinding",
+      "third": "rebinds"
+    },
+    {
+      "base": "rebuild",
+      "past": "rebuilt",
+      "pastp": "rebuilt",
+      "ing": "rebuilding",
+      "third": "rebuilds"
+    },
+    {
+      "base": "recast",
+      "past": "recast",
+      "pastp": "recast",
+      "ing": "recasting",
+      "third": "recasts"
+    },
+    {
+      "base": "redo",
+      "past": "redid",
+      "pastp": "redone",
+      "ing": "redoing",
+      "third": "redoes"
+    },
+    {
+      "base": "redraw",
+      "past": "redrew",
+      "pastp": "redrawn",
+      "ing": "redrawing",
+      "third": "redraws"
+    },
+    {
+      "base": "regrow",
+      "past": "regrew",
+      "pastp": "regrown",
+      "ing": "regrowing",
+      "third": "regrows"
+    },
+    {
+      "base": "relay",
+      "past": "relaid",
+      "pastp": "relaid",
+      "ing": "relaying",
+      "third": "relays"
+    },
+    {
+      "base": "remake",
+      "past": "remade",
+      "pastp": "remade",
+      "ing": "remaking",
+      "third": "remakes"
+    },
+    {
+      "base": "repay",
+      "past": "repaid",
+      "pastp": "repaid",
+      "ing": "repaying",
+      "third": "repays"
+    },
+    {
+      "base": "reread",
+      "past": "reread",
+      "pastp": "reread",
+      "ing": "rereading",
+      "third": "rereads"
+    },
+    {
+      "base": "rerun",
+      "past": "reran",
+      "pastp": "rerun",
+      "ing": "rerunning",
+      "third": "reruns"
+    },
+    {
+      "base": "resell",
+      "past": "resold",
+      "pastp": "resold",
+      "ing": "reselling",
+      "third": "resells"
+    },
+    {
+      "base": "reset",
+      "past": "reset",
+      "pastp": "reset",
+      "ing": "resetting",
+      "third": "resets"
+    },
+    {
+      "base": "retake",
+      "past": "retook",
+      "pastp": "retaken",
+      "ing": "retaking",
+      "third": "retakes"
+    },
+    {
+      "base": "retell",
+      "past": "retold",
+      "pastp": "retold",
+      "ing": "retelling",
+      "third": "retells"
+    },
+    {
+      "base": "rethink",
+      "past": "rethought",
+      "pastp": "rethought",
+      "ing": "rethinking",
+      "third": "rethinks"
+    },
+    {
+      "base": "reweave",
+      "past": "rewove",
+      "pastp": "rewoven",
+      "ing": "reweaving",
+      "third": "reweaves"
+    },
+    {
+      "base": "rewind",
+      "past": "rewound",
+      "pastp": "rewound",
+      "ing": "rewinding",
+      "third": "rewinds"
+    },
+    {
+      "base": "rewrite",
+      "past": "rewrote",
+      "pastp": "rewritten",
+      "ing": "rewriting",
+      "third": "rewrites"
+    },
+    {
+      "base": "rid",
+      "past": "rid",
+      "pastp": "rid",
+      "ing": "ridding",
+      "third": "rids"
+    },
+    {
+      "base": "ride",
+      "past": "rode",
+      "pastp": "ridden",
+      "ing": "riding",
+      "third": "rides"
+    },
+    {
+      "base": "ride",
+      "past": "rode",
+      "pastp": "ridden",
+      "ing": "riding",
+      "third": "rides"
+    },
+    {
+      "base": "ring",
+      "past": "rang",
+      "pastp": "rung",
+      "ing": "ringing",
+      "third": "rings"
+    },
+    {
+      "base": "rise",
+      "past": "rose",
+      "pastp": "risen",
+      "ing": "rising",
+      "third": "rises"
+    },
+    {
+      "base": "run",
+      "past": "ran",
+      "pastp": "run",
+      "ing": "running",
+      "third": "runs"
+    },
+    {
+      "base": "say",
+      "past": "said",
+      "pastp": "said",
+      "ing": "saying",
+      "third": "says"
+    },
+    {
+      "base": "see",
+      "past": "saw",
+      "pastp": "seen",
+      "ing": "seeing",
+      "third": "sees"
+    },
+    {
+      "base": "seek",
+      "past": "sought",
+      "pastp": "sought",
+      "ing": "seeking",
+      "third": "seeks"
+    },
+    {
+      "base": "sell",
+      "past": "sold",
+      "pastp": "sold",
+      "ing": "selling",
+      "third": "sells"
+    },
+    {
+      "base": "send",
+      "past": "sent",
+      "pastp": "sent",
+      "ing": "sending",
+      "third": "sends"
+    },
+    {
+      "base": "set",
+      "past": "set",
+      "pastp": "set",
+      "ing": "setting",
+      "third": "sets"
+    },
+    {
+      "base": "sew",
+      "past": "sewed",
+      "pastp": "sewn",
+      "ing": "sewing",
+      "third": "sews"
+    },
+    {
+      "base": "shake",
+      "past": "shook",
+      "pastp": "shaken",
+      "ing": "shaking",
+      "third": "shakes"
+    },
+    {
+      "base": "shed",
+      "past": "shed",
+      "pastp": "shed",
+      "ing": "shedding",
+      "third": "sheds"
+    },
+    {
+      "base": "shine",
+      "past": "shone",
+      "pastp": "shone",
+      "ing": "shining",
+      "third": "shines"
+    },
+    {
+      "base": "shoot",
+      "past": "shot",
+      "pastp": "shot",
+      "ing": "shooting",
+      "third": "shoots"
+    },
+    {
+      "base": "show",
+      "past": "showed",
+      "pastp": "shown",
+      "ing": "showing",
+      "third": "shows"
+    },
+    {
+      "base": "shrink",
+      "past": "shrank",
+      "pastp": "shrunk",
+      "ing": "shrinking",
+      "third": "shrinks"
+    },
+    {
+      "base": "shut",
+      "past": "shut",
+      "pastp": "shut",
+      "ing": "shutting",
+      "third": "shuts"
+    },
+    {
+      "base": "sing",
+      "past": "sang",
+      "pastp": "sung",
+      "ing": "singing",
+      "third": "sings"
+    },
+    {
+      "base": "sink",
+      "past": "sank",
+      "pastp": "sunk",
+      "ing": "sinking",
+      "third": "sinks"
+    },
+    {
+      "base": "sit",
+      "past": "sat",
+      "pastp": "sat",
+      "ing": "sitting",
+      "third": "sits"
+    },
+    {
+      "base": "slay",
+      "past": "slew",
+      "pastp": "slain",
+      "ing": "slaying",
+      "third": "slays"
+    },
+    {
+      "base": "sleep",
+      "past": "slept",
+      "pastp": "slept",
+      "ing": "sleeping",
+      "third": "sleeps"
+    },
+    {
+      "base": "slide",
+      "past": "slid",
+      "pastp": "slid",
+      "ing": "sliding",
+      "third": "slides"
+    },
+    {
+      "base": "sling",
+      "past": "slung",
+      "pastp": "slung",
+      "ing": "slinging",
+      "third": "slings"
+    },
+    {
+      "base": "slink",
+      "past": "slunk",
+      "pastp": "slunk",
+      "ing": "slinking",
+      "third": "slinks"
+    },
+    {
+      "base": "slit",
+      "past": "slit",
+      "pastp": "slit",
+      "ing": "slitting",
+      "third": "slits"
+    },
+    {
+      "base": "smell",
+      "past": "smelt",
+      "pastp": "smelt",
+      "ing": "smelling",
+      "third": "smells"
+    },
+    {
+      "base": "smite",
+      "past": "smote",
+      "pastp": "smitten",
+      "ing": "smiting",
+      "third": "smites"
+    },
+    {
+      "base": "sow",
+      "past": "sowed",
+      "pastp": "sown",
+      "ing": "sowing",
+      "third": "sows"
+    },
+    {
+      "base": "speak",
+      "past": "spoke",
+      "pastp": "spoken",
+      "ing": "speaking",
+      "third": "speaks"
+    },
+    {
+      "base": "speed",
+      "past": "sped",
+      "pastp": "sped",
+      "ing": "speeding",
+      "third": "speeds"
+    },
+    {
+      "base": "spell",
+      "past": "spelt",
+      "pastp": "spelt",
+      "ing": "spelling",
+      "third": "spells"
+    },
+    {
+      "base": "spend",
+      "past": "spent",
+      "pastp": "spent",
+      "ing": "spending",
+      "third": "spends"
+    },
+    {
+      "base": "spill",
+      "past": "spilt",
+      "pastp": "spilt",
+      "ing": "spilling",
+      "third": "spills"
+    },
+    {
+      "base": "spin",
+      "past": "spun",
+      "pastp": "spun",
+      "ing": "spinning",
+      "third": "spins"
+    },
+    {
+      "base": "spit",
+      "past": "spat",
+      "pastp": "spat",
+      "ing": "spitting",
+      "third": "spits"
+    },
+    {
+      "base": "split",
+      "past": "split",
+      "pastp": "split",
+      "ing": "splitting",
+      "third": "splits"
+    },
+    {
+      "base": "spoil",
+      "past": "spoilt",
+      "pastp": "spoilt",
+      "ing": "spoiling",
+      "third": "spoils"
+    },
+    {
+      "base": "spread",
+      "past": "spread",
+      "pastp": "spread",
+      "ing": "spreading",
+      "third": "spreads"
+    },
+    {
+      "base": "spring",
+      "past": "sprang",
+      "pastp": "sprung",
+      "ing": "springing",
+      "third": "springs"
+    },
+    {
+      "base": "stand",
+      "past": "stood",
+      "pastp": "stood",
+      "ing": "standing",
+      "third": "stands"
+    },
+    {
+      "base": "stick",
+      "past": "stuck",
+      "pastp": "stuck",
+      "ing": "sticking",
+      "third": "sticks"
+    },
+    {
+      "base": "stink",
+      "past": "stank",
+      "pastp": "stunk",
+      "ing": "stinking",
+      "third": "stinks"
+    },
+    {
+      "base": "strew",
+      "past": "strewed",
+      "pastp": "strewn",
+      "ing": "strewing",
+      "third": "strews"
+    },
+    {
+      "base": "stride",
+      "past": "strode",
+      "pastp": "stridden",
+      "ing": "striding",
+      "third": "strides"
+    },
+    {
+      "base": "strike",
+      "past": "struck",
+      "pastp": "struck",
+      "ing": "striking",
+      "third": "strikes"
+    },
+    {
+      "base": "string",
+      "past": "strung",
+      "pastp": "strung",
+      "ing": "stringing",
+      "third": "strings"
+    },
+    {
+      "base": "strive",
+      "past": "strove",
+      "pastp": "striven",
+      "ing": "striving",
+      "third": "strives"
+    },
+    {
+      "base": "sublet",
+      "past": "sublet",
+      "pastp": "sublet",
+      "ing": "subletting",
+      "third": "sublets"
+    },
+    {
+      "base": "swear",
+      "past": "swore",
+      "pastp": "sworn",
+      "ing": "swearing",
+      "third": "swears"
+    },
+    {
+      "base": "sweep",
+      "past": "swept",
+      "pastp": "swept",
+      "ing": "sweeping",
+      "third": "sweeps"
+    },
+    {
+      "base": "swim",
+      "past": "swam",
+      "pastp": "swum",
+      "ing": "swimming",
+      "third": "swims"
+    },
+    {
+      "base": "swing",
+      "past": "swung",
+      "pastp": "swung",
+      "ing": "swinging",
+      "third": "swings"
+    },
+    {
+      "base": "take",
+      "past": "took",
+      "pastp": "taken",
+      "ing": "taking",
+      "third": "takes"
+    },
+    {
+      "base": "teach",
+      "past": "taught",
+      "pastp": "taught",
+      "ing": "teaching",
+      "third": "teaches"
+    },
+    {
+      "base": "tear",
+      "past": "tore",
+      "pastp": "torn",
+      "ing": "tearing",
+      "third": "tears"
+    },
+    {
+      "base": "tell",
+      "past": "told",
+      "pastp": "told",
+      "ing": "telling",
+      "third": "tells"
+    },
+    {
+      "base": "think",
+      "past": "thought",
+      "pastp": "thought",
+      "ing": "thinking",
+      "third": "thinks"
+    },
+    {
+      "base": "throw",
+      "past": "threw",
+      "pastp": "thrown",
+      "ing": "throwing",
+      "third": "throws"
+    },
+    {
+      "base": "thrust",
+      "past": "thrust",
+      "pastp": "thrust",
+      "ing": "thrusting",
+      "third": "thrusts"
+    },
+    {
+      "base": "tread",
+      "past": "trod",
+      "pastp": "trodden",
+      "ing": "treading",
+      "third": "treads"
+    },
+    {
+      "base": "typeset",
+      "past": "typeset",
+      "pastp": "typeset",
+      "ing": "typesetting",
+      "third": "typesets"
+    },
+    {
+      "base": "unbend",
+      "past": "unbent",
+      "pastp": "unbent",
+      "ing": "unbending",
+      "third": "unbends"
+    },
+    {
+      "base": "unbind",
+      "past": "unbound",
+      "pastp": "unbound",
+      "ing": "unbinding",
+      "third": "unbinds"
+    },
+    {
+      "base": "underbid",
+      "past": "underbid",
+      "pastp": "underbid",
+      "ing": "underbidding",
+      "third": "underbids"
+    },
+    {
+      "base": "undercut",
+      "past": "undercut",
+      "pastp": "undercut",
+      "ing": "undercutting",
+      "third": "undercuts"
+    },
+    {
+      "base": "undergo",
+      "past": "underwent",
+      "pastp": "undergone",
+      "ing": "undergoing",
+      "third": "undergoes"
+    },
+    {
+      "base": "underlie",
+      "past": "underlay",
+      "pastp": "underlain",
+      "ing": "underlying",
+      "third": "underlies"
+    },
+    {
+      "base": "undersell",
+      "past": "undersold",
+      "pastp": "undersold",
+      "ing": "underselling",
+      "third": "undersells"
+    },
+    {
+      "base": "understand",
+      "past": "understood",
+      "pastp": "understood",
+      "ing": "understanding",
+      "third": "understands"
+    },
+    {
+      "base": "undertake",
+      "past": "undertook",
+      "pastp": "undertaken",
+      "ing": "undertaking",
+      "third": "undertakes"
+    },
+    {
+      "base": "underwrite",
+      "past": "underwrote",
+      "pastp": "underwritten",
+      "ing": "underwriting",
+      "third": "underwrites"
+    },
+    {
+      "base": "undo",
+      "past": "undid",
+      "pastp": "undone",
+      "ing": "undoing",
+      "third": "undoes"
+    },
+    {
+      "base": "unmake",
+      "past": "unmade",
+      "pastp": "unmade",
+      "ing": "unmaking",
+      "third": "unmakes"
+    },
+    {
+      "base": "unsay",
+      "past": "unsaid",
+      "pastp": "unsaid",
+      "ing": "unsaying",
+      "third": "unsays"
+    },
+    {
+      "base": "unwind",
+      "past": "unwound",
+      "pastp": "unwound",
+      "ing": "unwinding",
+      "third": "unwinds"
+    },
+    {
+      "base": "uphold",
+      "past": "upheld",
+      "pastp": "upheld",
+      "ing": "upholding",
+      "third": "upholds"
+    },
+    {
+      "base": "upset",
+      "past": "upset",
+      "pastp": "upset",
+      "ing": "upsetting",
+      "third": "upsets"
+    },
+    {
+      "base": "wake",
+      "past": "woke",
+      "pastp": "woken",
+      "ing": "waking",
+      "third": "wakes"
+    },
+    {
+      "base": "waylay",
+      "past": "waylaid",
+      "pastp": "waylaid",
+      "ing": "waylaying",
+      "third": "waylays"
+    },
+    {
+      "base": "wear",
+      "past": "wore",
+      "pastp": "worn",
+      "ing": "wearing",
+      "third": "wears"
+    },
+    {
+      "base": "wed",
+      "past": "wed",
+      "pastp": "wed",
+      "ing": "wedding",
+      "third": "weds"
+    },
+    {
+      "base": "weep",
+      "past": "wept",
+      "pastp": "wept",
+      "ing": "weeping",
+      "third": "weeps"
+    },
+    {
+      "base": "wet",
+      "past": "wet",
+      "pastp": "wet",
+      "ing": "wetting",
+      "third": "wets"
+    },
+    {
+      "base": "win",
+      "past": "won",
+      "pastp": "won",
+      "ing": "winning",
+      "third": "wins"
+    },
+    {
+      "base": "wind",
+      "past": "wound",
+      "pastp": "wound",
+      "ing": "winding",
+      "third": "winds"
+    },
+    {
+      "base": "withdraw",
+      "past": "withdrew",
+      "pastp": "withdrawn",
+      "ing": "withdrawing",
+      "third": "withdraws"
+    },
+    {
+      "base": "withhold",
+      "past": "withheld",
+      "pastp": "withheld",
+      "ing": "withholding",
+      "third": "withholds"
+    },
+    {
+      "base": "withstand",
+      "past": "withstood",
+      "pastp": "withstood",
+      "ing": "withstanding",
+      "third": "withstands"
+    },
+    {
+      "base": "wring",
+      "past": "wrung",
+      "pastp": "wrung",
+      "ing": "wringing",
+      "third": "wrings"
+    },
+    {
+      "base": "write",
+      "past": "wrote",
+      "pastp": "written",
+      "ing": "writing",
+      "third": "writes"
+    },
+    {
+      "_note": "Modal verbs: defective. Only base <-> past form exists.",
+      "base": "can",
+      "past": "could",
+      "pastp": null,
+      "ing": null,
+      "third": null
+    },
+    {
+      "base": "will",
+      "past": "would",
+      "pastp": null,
+      "ing": null,
+      "third": null
+    },
+    {
+      "base": "shall",
+      "past": "should",
+      "pastp": null,
+      "ing": null,
+      "third": null
+    },
+    {
+      "base": "may",
+      "past": "might",
+      "pastp": null,
+      "ing": null,
+      "third": null
+    }
+  ]
+}

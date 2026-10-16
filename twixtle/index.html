@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Twixtle - Offline Word Chain</title>
+  <link rel="stylesheet" href="app.css">
+  <script src="dict/data.js"></script>
+  <script src="puzzles.js"></script>
+</head>
+<body>
+  <div id="app" class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <button id="btn-levels" class="btn btn-header btn-level-select" aria-label="Select Level">
+          Level <span id="lbl-level">1</span> <span class="arrow-down">▾</span>
+        </button>
+        <span id="badge-perfect" class="badge-star" title="Solved in Perfect Mode without hints">★ PERFECT</span>
+        <span id="badge-solved" class="badge-solved" title="Level completed">✓ SOLVED</span>
+      </div>
+      <div class="header-right">
+        <button id="btn-prev" class="btn btn-header btn-icon" title="Previous Level">◀</button>
+        <button id="btn-next" class="btn btn-header btn-icon" title="Next Level">▶</button>
+        <button id="btn-reset" class="btn btn-header btn-icon" title="Reset Level">↺</button>
+        <button id="btn-rules" class="btn btn-header btn-icon" title="How to Play">?</button>
+      </div>
+    </header>
+
+    <!-- Main Game Playfield -->
+    <main class="game-main">
+      <div class="board-wrapper">
+        <!-- Start Word -->
+        <div class="word-card fixed-card start-card">
+          <div class="card-badge">START</div>
+          <div class="card-word" id="word-start">ARC</div>
+        </div>
+
+        <!-- Connector 1 -->
+        <div class="connector-row" id="connector-0">
+          <div class="connector-line"></div>
+          <button class="pill-move" id="pill-0" data-step="0" title="Tap to reveal move type hint">
+            <span class="pill-icon">?</span>
+            <span class="pill-text" id="pill-text-0">REVEAL MOVE</span>
+          </button>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- Intermediate Row 1 -->
+        <div class="word-card input-card" id="card-0" data-step="0">
+          <div class="card-badge">WORD 1</div>
+          <div class="card-tiles-container" id="tiles-0">
+            <span class="placeholder-text">Tap to type word 1</span>
+          </div>
+          <div class="card-status-icon" id="status-0"></div>
+        </div>
+
+        <!-- Connector 2 -->
+        <div class="connector-row" id="connector-1">
+          <div class="connector-line"></div>
+          <button class="pill-move" id="pill-1" data-step="1" title="Tap to reveal move type hint">
+            <span class="pill-icon">?</span>
+            <span class="pill-text" id="pill-text-1">REVEAL MOVE</span>
+          </button>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- Intermediate Row 2 -->
+        <div class="word-card input-card" id="card-1" data-step="1">
+          <div class="card-badge">WORD 2</div>
+          <div class="card-tiles-container" id="tiles-1">
+            <span class="placeholder-text">Tap to type word 2</span>
+          </div>
+          <div class="card-status-icon" id="status-1"></div>
+        </div>
+
+        <!-- Connector 3 -->
+        <div class="connector-row" id="connector-2">
+          <div class="connector-line"></div>
+          <button class="pill-move" id="pill-2" data-step="2" title="Tap to reveal move type hint">
+            <span class="pill-icon">?</span>
+            <span class="pill-text" id="pill-text-2">REVEAL MOVE</span>
+          </button>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- Intermediate Row 3 -->
+        <div class="word-card input-card" id="card-2" data-step="2">
+          <div class="card-badge">WORD 3</div>
+          <div class="card-tiles-container" id="tiles-2">
+            <span class="placeholder-text">Tap to type word 3</span>
+          </div>
+          <div class="card-status-icon" id="status-2"></div>
+        </div>
+
+        <!-- Connector 4 -->
+        <div class="connector-row" id="connector-3">
+          <div class="connector-line"></div>
+          <button class="pill-move" id="pill-3" data-step="3" title="Tap to reveal move type hint">
+            <span class="pill-icon">?</span>
+            <span class="pill-text" id="pill-text-3">REVEAL MOVE</span>
+          </button>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- End Word -->
+        <div class="word-card fixed-card end-card">
+          <div class="card-badge">END</div>
+          <div class="card-word" id="word-end">SIGH</div>
+        </div>
+      </div>
+
+      <!-- Feedback / Notification banner -->
+      <div id="game-message" class="game-message" aria-live="polite"></div>
+
+      <!-- Row action shortcuts -->
+      <div class="board-actions">
+        <button id="btn-hint" class="btn btn-action">💡 Word Hint</button>
+        <button id="btn-clear-row" class="btn btn-action">⌫ Clear Row</button>
+        <button id="btn-giveup" class="btn btn-action">👁 Solution</button>
+      </div>
+    </main>
+
+    <!-- Built-in On-Screen Touch Keyboard -->
+    <footer class="app-keyboard" id="virtual-keyboard">
+      <div class="kb-row">
+        <button class="kb-key" data-key="Q">Q</button>
+        <button class="kb-key" data-key="W">W</button>
+        <button class="kb-key" data-key="E">E</button>
+        <button class="kb-key" data-key="R">R</button>
+        <button class="kb-key" data-key="T">T</button>
+        <button class="kb-key" data-key="Y">Y</button>
+        <button class="kb-key" data-key="U">U</button>
+        <button class="kb-key" data-key="I">I</button>
+        <button class="kb-key" data-key="O">O</button>
+        <button class="kb-key" data-key="P">P</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key" data-key="A">A</button>
+        <button class="kb-key" data-key="S">S</button>
+        <button class="kb-key" data-key="D">D</button>
+        <button class="kb-key" data-key="F">F</button>
+        <button class="kb-key" data-key="G">G</button>
+        <button class="kb-key" data-key="H">H</button>
+        <button class="kb-key" data-key="J">J</button>
+        <button class="kb-key" data-key="K">K</button>
+        <button class="kb-key" data-key="L">L</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key kb-key-wide" data-key="ENTER">CHECK ↵</button>
+        <button class="kb-key" data-key="Z">Z</button>
+        <button class="kb-key" data-key="X">X</button>
+        <button class="kb-key" data-key="C">C</button>
+        <button class="kb-key" data-key="V">V</button>
+        <button class="kb-key" data-key="B">B</button>
+        <button class="kb-key" data-key="N">N</button>
+        <button class="kb-key" data-key="M">M</button>
+        <button class="kb-key kb-key-wide" data-key="BACKSPACE">⌫</button>
+      </div>
+    </footer>
+
+    <!-- Level Select Modal -->
+    <div id="modal-levels" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-levels-title">
+      <div class="modal-content modal-levels-content">
+        <div class="modal-header">
+          <h2 id="modal-levels-title">Select Level (1 - <span id="max-level-count">550</span>)</h2>
+          <button id="btn-close-levels" class="btn btn-close" aria-label="Close">✕</button>
+        </div>
+        <div class="level-stats-bar">
+          <span>Unlocked: <strong id="stat-unlocked">1</strong></span>
+          <span>Solved: <strong id="stat-solved">0</strong></span>
+          <span>Perfect ★: <strong id="stat-perfect">0</strong></span>
+        </div>
+        <div class="level-filter-bar">
+          <button class="btn btn-filter active" data-filter="all">All</button>
+          <button class="btn btn-filter" data-filter="unsolved">Unsolved</button>
+          <button class="btn btn-filter" data-filter="solved">Solved</button>
+        </div>
+        <div class="levels-grid" id="levels-grid"></div>
+      </div>
+    </div>
+
+    <!-- Rules / Help Modal -->
+    <div id="modal-rules" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-rules-title">
+      <div class="modal-content modal-rules-content">
+        <div class="modal-header">
+          <h2 id="modal-rules-title">How to Play Twixtle</h2>
+          <button id="btn-close-rules" class="btn btn-close" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="rules-lead">Transform the <strong>START</strong> word into the <strong>END</strong> word in exactly 4 steps. Each of the 4 move types is used exactly once:</p>
+          
+          <div class="rule-item">
+            <div class="rule-badge">ANAGRAM</div>
+            <div class="rule-desc">Rearrange the exact same letters to make a new word.<br><em>Example: ARC ➔ CAR, HEART ➔ EARTH</em></div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-badge">COMPOUND</div>
+            <div class="rule-desc">Combine the word with another word to form a single compound word.<br><em>Example: CAR ➔ SIDE (sidecar), SWEAT ➔ BAND (sweatband)</em></div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-badge">HOMOPHONE</div>
+            <div class="rule-desc">Swap for a word that sounds identical but is spelled differently.<br><em>Example: SIDE ➔ SIGHED, FLOWER ➔ FLOUR, BARE ➔ BEAR</em></div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-badge">VERB</div>
+            <div class="rule-desc">Change to another grammatical tense or form of the same verb.<br><em>Example: SIGHED ➔ SIGH, RUN ➔ RAN, SING ➔ SINGING</em></div>
+          </div>
+
+          <div class="rule-note">
+            <strong>★ PERFECT MODE:</strong> Keep all move pills unrevealed as <strong>?</strong> and deduce the move types yourself to earn a Gold Star! Tapping a <strong>?</strong> pill will reveal that move type as a hint.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-rules-ok" class="btn btn-primary">Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Victory Modal -->
+    <div id="modal-victory" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-victory-title">
+      <div class="modal-content modal-victory-content">
+        <div class="victory-header">
+          <div class="victory-icon">★</div>
+          <h2 id="modal-victory-title">Level Solved!</h2>
+          <p id="victory-subtitle" class="victory-subtitle">Perfect Solve! No hints used.</p>
+        </div>
+        <div class="victory-chain" id="victory-chain"></div>
+        <div class="modal-footer victory-actions">
+          <button id="btn-victory-next" class="btn btn-primary btn-lg">Next Level ▶</button>
+          <button id="btn-victory-replay" class="btn btn-secondary">Replay ↺</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Solution Modal -->
+    <div id="modal-solution" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-sol-title">
+      <div class="modal-content modal-dialog-content">
+        <div class="modal-header">
+          <h2 id="modal-sol-title">Give Up & View Solution?</h2>
+          <button id="btn-close-solution" class="btn btn-close" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>Revealing the solution will mark this puzzle as solved with solutions shown.</p>
+          <div id="solution-display" class="solution-display hidden"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-confirm-solution" class="btn btn-danger">Show Solution</button>
+          <button id="btn-cancel-solution" class="btn btn-secondary">Keep Trying</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+/* ==========================================================================
+   Twixtle - E-Ink Optimized High-Contrast Stylesheet
+   Tailored for Kobo Clara BW (Carta 1300 E-Ink, 1072x1448)
+   ========================================================================== */
+
+/* Universal E-Ink Reset: disable animations, transitions, and blurs */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: none !important;
+  animation: none !important;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* Main Layout */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  max-width: 650px;
+  margin: 0 auto;
+  position: relative;
+  background: #ffffff;
+}
+
+/* ==========================================================================
+   Buttons & Common UI
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000000;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+
+.btn:active, .btn.active {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-danger {
+  border: 2px solid #000000;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-lg {
+  font-size: 18px;
+  padding: 10px 20px;
+}
+
+.btn-close {
+  width: 38px;
+  height: 38px;
+  font-size: 20px;
+  padding: 0;
+  border: 2px solid #000000;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Header Bar
+   ========================================================================== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 2px solid #000000;
+  background-color: #ffffff;
+  min-height: 52px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-level-select {
+  font-size: 16px;
+  padding: 6px 10px;
+  border: 2px solid #000000;
+}
+
+.arrow-down {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.btn-icon {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  font-size: 16px;
+}
+
+.badge-star {
+  display: none;
+  font-size: 11px;
+  font-weight: 800;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid #000000;
+}
+
+.badge-star.visible {
+  display: inline-block;
+}
+
+.badge-solved {
+  display: none;
+  font-size: 11px;
+  font-weight: 800;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 2px solid #000000;
+}
+
+.badge-solved.visible {
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Game Main Playfield
+   ========================================================================== */
+.game-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 12px 4px 12px;
+  overflow-y: auto;
+}
+
+.board-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Word Cards */
+.word-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background-color: #ffffff;
+  min-height: 48px;
+  position: relative;
+  cursor: pointer;
+}
+
+.card-badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #000000;
+  flex-shrink: 0;
+  width: 58px;
+  text-align: center;
+}
+
+/* Fixed Start & End Cards */
+.fixed-card {
+  background-color: #000000;
+  color: #ffffff;
+  cursor: default;
+}
+
+.fixed-card .card-badge {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ffffff;
+}
+
+.fixed-card .card-word {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  flex: 1;
+  text-align: center;
+  margin-right: 58px; /* Balance the badge */
+}
+
+/* Input Cards */
+.input-card {
+  border-width: 2px;
+  background-color: #ffffff;
+}
+
+.input-card.active {
+  border-width: 3px;
+  background-color: #f7f7f7;
+  outline: 2px solid #000000;
+  outline-offset: 1px;
+}
+
+.input-card.valid {
+  border-width: 2px;
+  background-color: #ffffff;
+}
+
+.input-card.invalid {
+  border-style: dashed;
+}
+
+.card-tiles-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 32px;
+  margin: 0 8px;
+}
+
+.placeholder-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555555;
+  font-style: italic;
+}
+
+.letter-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.letter-tile.cursor {
+  border-bottom: 4px solid #000000;
+  background-color: #ebebeb;
+}
+
+.card-status-icon {
+  width: 24px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.card-status-icon.success::after {
+  content: "✓";
+}
+
+.card-status-icon.failure::after {
+  content: "✕";
+}
+
+/* Connector Rows & Move Pills */
+.connector-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  position: relative;
+}
+
+.connector-line {
+  flex: 1;
+  height: 2px;
+  background-color: #000000;
+}
+
+.pill-move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border: 2px solid #000000;
+  border-radius: 14px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  z-index: 1;
+  min-width: 130px;
+}
+
+.pill-move.revealed {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.pill-icon {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.pill-text {
+  text-transform: uppercase;
+}
+
+/* Feedback & Toolbar */
+.game-message {
+  min-height: 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 4px 0;
+  padding: 2px 8px;
+  color: #000000;
+}
+
+.game-message.error {
+  text-decoration: underline;
+}
+
+.board-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.btn-action {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+/* ==========================================================================
+   Built-in On-Screen QWERTY Keyboard
+   ========================================================================== */
+.app-keyboard {
+  background-color: #ffffff;
+  border-top: 2px solid #000000;
+  padding: 6px 4px 10px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  user-select: none;
+  -webkit-user-select: none;
+  width: 100%;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.kb-key {
+  flex: 1;
+  height: 48px;
+  max-width: 58px;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.kb-key:active {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.kb-key-wide {
+  flex: 1.5;
+  max-width: 86px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 12px;
+}
+
+.modal-content {
+  background: #ffffff;
+  border: 3px solid #000000;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 540px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 2px solid #000000;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  padding: 12px 16px;
+  border-top: 2px solid #000000;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Level Select Grid */
+.level-stats-bar {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 12px;
+  border-bottom: 1px solid #000000;
+  font-size: 13px;
+  background-color: #f5f5f5;
+}
+
+.level-filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 2px solid #000000;
+}
+
+.btn-filter {
+  font-size: 13px;
+  padding: 4px 14px;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 14px;
+  overflow-y: auto;
+  max-height: 55vh;
+}
+
+.level-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  position: relative;
+}
+
+.level-btn.active {
+  border-width: 3px;
+  outline: 2px solid #000000;
+}
+
+.level-btn.solved {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.level-btn.locked {
+  background-color: #f0f0f0;
+  color: #888888;
+  border-color: #888888;
+  cursor: not-allowed;
+}
+
+.level-btn-star {
+  font-size: 10px;
+  position: absolute;
+  top: 2px;
+  right: 3px;
+}
+
+/* Rules Modal */
+.rules-lead {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.rule-item {
+  border: 2px solid #000000;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.rule-badge {
+  font-size: 12px;
+  font-weight: 800;
+  background-color: #000000;
+  color: #ffffff;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.rule-desc {
+  font-size: 13px;
+}
+
+.rule-note {
+  border: 2px dashed #000000;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* Victory Modal */
+.modal-victory-content {
+  text-align: center;
+  padding: 16px 20px;
+}
+
+.victory-icon {
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.victory-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.victory-chain {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0 20px 0;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.victory-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.victory-step-word {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.victory-step-move {
+  font-size: 11px;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.victory-actions {
+  justify-content: center;
+}
+
+/* Solution Display */
+.solution-display {
+  margin-top: 12px;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.solution-chain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
