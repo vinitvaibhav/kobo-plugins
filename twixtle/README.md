@@ -1,6 +1,9 @@
-# Twixtle for Kobo eReader
+> [!IMPORTANT]
+> **Recommended:** For the best offline experience without Kobo Nickel browser Wi-Fi prompts or QtWebKit latency, use the native KOReader plugin: [**`twixtle.koplugin`**](../twixtle.koplugin/).
 
-A lightweight, 100% offline, E-Ink optimized word transformation game designed specifically for **Kobo Clara BW** (Carta 1300, 1072×1448) and any Kobo eReader equipped with **NickelMenu**.
+# Twixtle for Kobo eReader (Legacy Web App)
+
+A lightweight, offline, E-Ink optimized word transformation game designed for Kobo's built-in browser via NickelMenu.
 
 Faithfully recreates the daily word game from [twixtle.games](https://twixtle.games/) with **550 offline verified levels** and a sequential level-progression system.
 
