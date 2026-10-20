@@ -231,7 +231,10 @@ function Dictionary:is_valid_step(w1, w2, move_type)
     elseif move_type == "homophone" then
         return self:is_homophone(w1, w2)
     elseif move_type == "compound" then
-        return self:is_compound(w1, w2)
+        if self:is_compound(w1, w2) then return true end
+        local partner = self:infer_compound_partner(w1, w2)
+        if partner and self:is_compound(w1, partner) then return true end
+        return false
     elseif move_type == "verb" then
         return self:is_verb_form(w1, w2)
     end

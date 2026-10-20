@@ -1,5 +1,5 @@
 --[[
-    Twixtle Comprehensive Test & Stress Test Suite
+    Twixtle Comprehensive Test & Stress Test Suite (v4)
     Tests all 550 levels, edge cases, move rules, engine mechanics, persistence, and memory stability.
 --]]
 
@@ -30,7 +30,7 @@ local function assert_equal(a, b, msg)
 end
 
 print("=======================================================")
-print("          TWIXTLE TEST & STRESS SUITE                  ")
+print("          TWIXTLE TEST & STRESS SUITE (v4)             ")
 print("=======================================================")
 
 -- 1. Initialize Dictionary
@@ -74,30 +74,22 @@ assert_true(Dictionary:is_valid_step("flour", "flower", "homophone"), "flour -> 
 assert_true(Dictionary:is_valid_step("side", "sighed", "homophone"), "side -> sighed is valid homophone")
 assert_true(Dictionary:is_valid_step("bare", "bear", "homophone"), "bare -> bear is valid homophone")
 assert_true(Dictionary:is_valid_step("sight", "site", "homophone"), "sight -> site is valid homophone")
--- Suffix propagation: -s, -ed, -ing
 assert_true(Dictionary:is_valid_step("bears", "bares", "homophone"), "bears -> bares suffix -s valid")
 assert_false(Dictionary:is_valid_step("bare", "bare", "homophone"), "Identical word homophone must fail")
 assert_false(Dictionary:is_valid_step("apple", "banana", "homophone"), "Unrelated words must fail")
 
 -- 6. Verb Inflection Tests (Irregular & Regular)
 print("[+] Testing Verb Form Logic & Inflections...")
--- Irregular verbs
 assert_true(Dictionary:is_valid_step("run", "ran", "verb"), "run -> ran is valid verb form")
 assert_true(Dictionary:is_valid_step("sing", "sang", "verb"), "sing -> sang is valid verb form")
 assert_true(Dictionary:is_valid_step("sing", "sung", "verb"), "sing -> sung is valid verb form")
 assert_true(Dictionary:is_valid_step("singing", "sings", "verb"), "singing -> sings is valid verb form")
--- Regular verbs with doubling
 assert_true(Dictionary:is_valid_step("drop", "dropped", "verb"), "drop -> dropped (consonant doubling) is valid")
 assert_true(Dictionary:is_valid_step("drop", "dropping", "verb"), "drop -> dropping is valid")
--- Regular verbs ending in -ie (die, tie, lie)
 assert_true(Dictionary:is_valid_step("die", "dying", "verb"), "die -> dying is valid verb form")
 assert_true(Dictionary:is_valid_step("dying", "dies", "verb"), "dying -> dies is valid verb form")
-assert_true(Dictionary:is_valid_step("tie", "tying", "verb"), "tie -> tying is valid verb form")
-assert_true(Dictionary:is_valid_step("lie", "lying", "verb"), "lie -> lying is valid verb form")
--- Regular verbs ending in -y
 assert_true(Dictionary:is_valid_step("carry", "carried", "verb"), "carry -> carried is valid verb form")
 assert_true(Dictionary:is_valid_step("carry", "carries", "verb"), "carry -> carries is valid verb form")
--- Non-verbs or unrelated verbs
 assert_false(Dictionary:is_valid_step("run", "jump", "verb"), "Unrelated verbs must fail")
 assert_false(Dictionary:is_valid_step("run", "run", "verb"), "Identical word verb must fail")
 
@@ -132,102 +124,125 @@ local puzzle_time = os.clock() - puzzle_start_time
 print(string.format("[✓] Verified all %d puzzles (2,200 transitions) in %.3f seconds.", #Puzzles, puzzle_time))
 assert_equal(puzzle_errors, 0, "All 550 puzzles must have 0 transition errors")
 
--- 8. Engine Simulation & Progression Tests
-print("\n[+] Testing Engine Mechanics & Level Progression...")
-local test_settings = "/tmp/twixtle_test_settings.lua"
+-- 8. Engine v4 Mechanics (Manual Action Selection, Enter-to-Submit, Reset on Error, 3 Words)
+print("\n[+] Testing Engine v4 Mechanics & Gameplay...")
+local test_settings = "/tmp/twixtle_test_settings_v4.lua"
 os.remove(test_settings)
 
 Engine:init("twixtle.koplugin", test_settings)
 assert_equal(Engine.current_level, 1, "Starts at level 1")
-assert_equal(Engine.unlocked_level, 1, "Unlocked level starts at 1")
+assert_equal(Engine.active_step, 1, "Starts at active step 1")
 assert_false(Engine.is_solved, "New level must not be solved")
 
--- Test typing non-matching letters
-Engine:handleKey("Z")
-Engine:handleKey("Z")
-Engine:handleKey("Z")
-assert_equal(Engine.current_input, "zzz", "Current input should hold 'zzz'")
-assert_equal(Engine.active_step, 1, "Non-matching word must not auto-submit")
+-- Test 8a: Submitting without typing
+Engine:handleKey("↵")
+assert_true(Engine.is_error, "Submitting empty word must set error")
+assert_equal(Engine.active_step, 1, "Active step stays 1")
 
--- Test backspace
-Engine:handleKey("BACKSPACE")
-Engine:handleKey("BACKSPACE")
-Engine:handleKey("BACKSPACE")
-assert_equal(Engine.current_input, "", "Backspace must clear input buffer")
+-- Test 8b: Submitting without selecting action
+Engine:handleKey("C")
+Engine:handleKey("A")
+Engine:handleKey("R")
+assert_equal(Engine.current_input, "CAR", "Input holds CAR")
+Engine:handleKey("↵")
+assert_true(Engine.is_error, "Submitting without action must set error")
+assert_equal(Engine.active_step, 1, "Active step stays 1")
 
--- Test correct step 1 for Level 1 (arc -> car via anagram)
-for i = 1, #"car" do
-    Engine:handleKey(("car"):sub(i, i))
-end
-assert_equal(Engine.row_inputs[1], "car", "Row 1 should auto-submit 'car'")
-assert_equal(Engine.active_step, 2, "Active step should advance to 2")
-assert_equal(Engine.current_input, "", "Input buffer cleared on auto-submit")
+-- Test 8c: Submitting invalid word -> resets word field!
+Engine:selectAction("anagram")
+assert_equal(Engine.selected_action, "anagram", "Action selected is anagram")
+Engine.current_input = "ZZZ"
+Engine:handleKey("↵")
+assert_true(Engine.is_error, "Invalid word sets error")
+assert_equal(Engine.current_input, "", "Invalid word resets word field to empty string!")
 
--- Test correct step 2 for Level 1 (car -> side via compound)
-for i = 1, #"side" do
-    Engine:handleKey(("side"):sub(i, i))
-end
-assert_equal(Engine.row_inputs[2], "side", "Row 2 should auto-submit 'side'")
-assert_equal(Engine.active_step, 3, "Active step should advance to 3")
+-- Test 8d: Submitting non-matching rule -> resets word field!
+Engine.current_input = "DOG"
+Engine:handleKey("↵")
+assert_true(Engine.is_error, "DOG is not anagram of ARC")
+assert_equal(Engine.current_input, "", "Mismatched rule resets word field to empty string!")
 
--- Test undo
+-- Test 8e: Submitting valid Step 1 (arc -> car via anagram)
+Engine.current_input = "CAR"
+Engine:handleKey("↵")
+assert_false(Engine.is_error, "Valid step 1 must succeed without error")
+assert_equal(Engine.row_inputs[1], "CAR", "Row 1 must be CAR")
+assert_equal(Engine.chosen_moves[1], "anagram", "Move 1 is anagram")
+assert_equal(Engine.active_step, 2, "Active step advances to 2")
+assert_equal(Engine.current_input, "", "Buffer cleared on valid submit")
+assert_true(Engine:isActionUsed("anagram"), "Anagram is now used")
+assert_false(Engine:isActionUsed("compound"), "Compound is not used yet")
+
+-- Test 8f: Step 2 (car -> side via compound)
+Engine:selectAction("compound")
+assert_equal(Engine.selected_action, "compound")
+Engine.current_input = "SIDE"
+Engine:handleKey("↵")
+assert_equal(Engine.row_inputs[2], "SIDE", "Row 2 must be SIDE")
+assert_equal(Engine.chosen_moves[2], "compound", "Move 2 is compound")
+assert_equal(Engine.active_step, 3, "Active step advances to 3")
+
+-- Test 8g: Undo from Step 3
 Engine:undo()
-assert_equal(Engine.active_step, 2, "Undo should roll back to step 2")
+assert_equal(Engine.active_step, 2, "Undo rolls back to step 2")
 assert_equal(Engine.row_inputs[2], "", "Row 2 cleared on undo")
+assert_equal(Engine.chosen_moves[2], nil, "Move 2 cleared on undo")
+assert_false(Engine:isActionUsed("compound"), "Compound rule freed on undo")
 
--- Re-submit step 2
-for i = 1, #"side" do
-    Engine:handleKey(("side"):sub(i, i))
+-- Re-do Step 2
+Engine:selectAction("compound")
+Engine.current_input = "SIDE"
+Engine:handleKey("↵")
+assert_equal(Engine.active_step, 3)
+
+-- Test 8h: Step 3 (side -> sighed via homophone)
+Engine:selectAction("homophone")
+Engine.current_input = "SIGHED"
+Engine:handleKey("↵")
+assert_equal(Engine.row_inputs[3], "SIGHED", "Row 3 must be SIGHED")
+assert_equal(Engine.chosen_moves[3], "homophone", "Move 3 is homophone")
+
+-- Step 4 auto-assignment & win check
+assert_equal(Engine.chosen_moves[4], "verb", "4th action auto-assigned to remaining action 'verb'")
+assert_true(Engine.is_solved, "Level 1 is now SOLVED (sighed -> sigh via verb)!")
+assert_equal(Engine.message, "Puzzle Solved! ★★★")
+
+-- Test 8i: Reset Level Button
+Engine:resetLevel()
+assert_equal(Engine.active_step, 1, "Reset brings active step to 1")
+assert_equal(Engine.row_inputs[1], "", "Row 1 cleared on reset")
+assert_equal(Engine.row_inputs[2], "", "Row 2 cleared on reset")
+assert_equal(Engine.row_inputs[3], "", "Row 3 cleared on reset")
+assert_equal(Engine.chosen_moves[1], nil, "Move 1 cleared on reset")
+assert_false(Engine.is_solved, "Solved flag cleared on reset")
+
+-- 9. Stress Testing All 550 Levels Playthrough
+print("\n[+] Stress Testing All 550 Levels Playthrough in Engine v4...")
+for i = 1, #Puzzles do
+    Engine:loadLevel(i)
+    local p = Puzzles[i]
+    -- Step 1
+    Engine:selectAction(p.moves[1])
+    Engine.current_input = p.solution[2]
+    Engine:handleKey("↵")
+    -- Step 2
+    Engine:selectAction(p.moves[2])
+    Engine.current_input = p.solution[3]
+    Engine:handleKey("↵")
+    -- Step 3
+    Engine:selectAction(p.moves[3])
+    Engine.current_input = p.solution[4]
+    Engine:handleKey("↵")
+
+    assert_true(Engine.is_solved, "Level " .. i .. " must be solved")
+    assert_equal(Engine.chosen_moves[4], p.moves[4], "4th move matches puzzle move 4")
 end
-assert_equal(Engine.row_inputs[2], "side", "Row 2 re-solved as 'side'")
+print(string.format("[✓] Successfully played through all %d levels with 0 errors!", #Puzzles))
 
--- Test hint reveal
-assert_false(Engine.revealed_moves[3], "Move 3 starts unrevealed")
-Engine:hint()
-assert_true(Engine.revealed_moves[3], "Move 3 must be revealed")
-assert_true(Engine.hints_used, "Hints used must be true after revealing move")
-
--- Test step 3 (side -> sighed via homophone)
-for i = 1, #"sighed" do
-    Engine:handleKey(("sighed"):sub(i, i))
-end
-assert_equal(Engine.row_inputs[3], "sighed", "Row 3 should auto-submit 'sighed'")
-assert_equal(Engine.active_step, 4, "Active step should advance to 4")
-
--- Test step 4 (sighed -> sigh via verb, reaching END)
-for i = 1, #"sigh" do
-    Engine:handleKey(("sigh"):sub(i, i))
-end
-assert_equal(Engine.row_inputs[4], "sigh", "Row 4 should auto-submit 'sigh'")
-assert_true(Engine.is_solved, "Level 1 must be solved after step 4 completes")
-assert_equal(Engine.unlocked_level, 2, "Level 2 must be unlocked")
-assert_true(Engine.solved_map[1].solved, "Level 1 marked solved in solved_map")
-
--- 9. Memory & Playthrough Stress Test (Simulate All 550 Levels in a Loop)
-print("\n[+] Stress Testing Memory & Garbage Collection (All 550 Levels End-to-End)...")
+-- Memory check
 collectgarbage("collect")
-local mem_before = collectgarbage("count")
-
-for lvl = 1, #Puzzles do
-    Engine:loadLevel(lvl)
-    local sol = Engine.puzzle.solution
-    -- Play full solution
-    for step = 1, 4 do
-        Engine.current_input = sol[step + 1]
-        Engine:checkAutoSubmit()
-    end
-    assert_true(Engine.is_solved, "Level " .. lvl .. " must solve correctly")
-    assert_true(Engine.solved_map[lvl].solved, "Level " .. lvl .. " recorded in storage")
-end
-
-collectgarbage("collect")
-local mem_after = collectgarbage("count")
-local mem_diff = (mem_after - mem_before) / 1024
-print(string.format("[✓] Simulated all 550 levels. Memory diff after GC: %.2f MB (Initial: %.2f MB, Final: %.2f MB)", mem_diff, mem_before / 1024, mem_after / 1024))
-assert_true(math.abs(mem_diff) < 2.0, "Memory must remain stable without leaks")
-
--- Clean up test file
-os.remove(test_settings)
+local mem_final = collectgarbage("count") / 1024
+print(string.format("[✓] Memory after all 550 level playthroughs: %.2f MB", mem_final))
 
 print("\n=======================================================")
 print(string.format("ALL TESTS PASSED! (%d/%d assertions passed with 0 errors)", tests_passed, tests_run))

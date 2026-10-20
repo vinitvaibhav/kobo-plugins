@@ -36,10 +36,14 @@ Transform the **START** word into the **END** word in exactly **4 steps** using 
 4. **VERB FORM**: Change to another grammatical inflection of the same English verb (e.g., base, past, past participle, present participle, 3rd person singular).
    - *Example:* `SIGHED` ➔ `SIGH`, `RUN` ➔ `RAN`, `WRITE` ➔ `WRITTEN`, `BREAK` ➔ `BROKEN`
 
-### ★ Perfect Solve Mode
-- Each level begins with the move pills displayed as **`?` (Hidden)**.
-- If you deduce the entire chain without tapping any move pill to reveal hints, you earn a **★ PERFECT** gold star rating!
-- Stuck? Tap any move pill to reveal its transformation type (`ANAGRAM`, `COMPOUND`, `HOMOPHONE`, `VERB`), or use the **💡 Hint** / **Give Up** options in the toolbar.
+### 🎮 Gameplay Mechanics (v4)
+- **Active Rule Choice**: For each step, tap the pill corresponding to your chosen rule (`Homophone`, `Compound`, `Anagram`, or `Verb`).
+- **4-Action Economy**: Each rule must be used exactly once across the 4 transitions. At Step 3, the 4th rule is auto-assigned from the remaining unused action.
+- **Alternative Paths Accepted**: You are not forced to follow the puzzle's canonical solution; any valid English word path satisfying the chosen rules is accepted! If you take an alternative branch that cannot connect to the END word at step 3, you can use **[ UNDO ]** or **[ ↺ RESET ]** to backtrack.
+- **Manual ↵ ENTER Submission**: Type your word using the on-screen touch keyboard and press **↵ ENTER** to submit.
+- **Auto-Reset on Invalid Entry**: If the word is not in the dictionary or does not follow the chosen rule, the field is cleared immediately with helpful feedback.
+- **Dedicated Controls**: Instant **[ ↺ RESET ]**, level picker **[ ▦ SELECT ]**, and **[ ✕ EXIT ]** conveniently accessible at the top right corner.
+- **[ HINT ]**: Stuck? Tap **[ HINT ]** to reveal the canonical next word and rule.
 
 ---
 

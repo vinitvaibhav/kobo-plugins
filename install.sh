@@ -70,7 +70,7 @@ fi
 # Install twixtle if selected
 if [ "$TARGET" = "all" ] || [ "$TARGET" = "twixtle" ]; then
     echo ""
-    echo "🎮 Installing Twixtle v3 (100% Offline Standalone & KOReader Game)..."
+    echo "🎮 Installing Twixtle v4 (100% Offline Standalone & KOReader Game)..."
 
     # 1. Standalone NickelMenu application (.adds/twixtle)
     STANDALONE_DIR="$KOBO_MOUNT/.adds/twixtle"
@@ -123,7 +123,7 @@ EOF
         dot_clean "$NM_DIR"
         dot_clean "$TWIXTLE_DEST"
     fi
-    echo "  [✓] Twixtle v3 (Standalone & KOReader) successfully installed."
+    echo "  [✓] Twixtle v4 (Standalone & KOReader) successfully installed."
 fi
 
 # Flush all disk buffers

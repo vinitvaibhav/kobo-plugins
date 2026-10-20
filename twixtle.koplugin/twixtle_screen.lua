@@ -1,6 +1,13 @@
 --[[
-    Twixtle Full-Screen UI Widget for KOReader
-    High-contrast monochrome Carta 1300 E-Ink interface with touch keyboard and level selector.
+    Twixtle Full-Screen UI Widget for KOReader (v4.1)
+    High-contrast monochrome Carta 1300 E-Ink interface matching user design mockup:
+    - Balanced vertical layout utilizing the full screen
+    - Keyboard pinned flush to the bottom
+    - Clean top header with reset, level select, and close buttons on the top right
+    - 3-step word chain with left-aligned numbered lines and underline across width
+    - Clean horizontal action pills under active step
+    - Enter key submission on keyboard (auto-submit removed)
+    - Auto-reset word field on invalid submission
 --]]
 
 local Blitbuffer = require("ffi/blitbuffer")
@@ -30,13 +37,20 @@ local TwixtleScreen = InputContainer:extend{
     covers_fullscreen = true,
 }
 
+local ACTION_NAMES = {
+    homophone = "Homophone",
+    compound = "Compound",
+    anagram = "Anagram",
+    verb = "Verb",
+}
+
 local function format_spaced_word(w)
     if not w or w == "" then return "" end
     local chars = {}
     for i = 1, #w do
         table.insert(chars, w:sub(i, i):upper())
     end
-    return table.concat(chars, "   ")
+    return table.concat(chars, "  ")
 end
 
 function TwixtleScreen:init()
@@ -54,81 +68,76 @@ function TwixtleScreen:paintTo(bb, x, y)
     self.dimen.y = y
     bb:paintRect(x, y, self.dimen.w, self.dimen.h, Blitbuffer.COLOR_WHITE)
     if self[1] then
-        local offset_x = math.floor((self.dimen.w - self[1]:getSize().w) / 2)
-        local offset_y = math.floor((self.dimen.h - self[1]:getSize().h) / 2)
-        self[1]:paintTo(bb, offset_x, offset_y)
+        self[1]:paintTo(bb, x, y)
     end
 end
 
 function TwixtleScreen:buildUI()
-    local screen_w = Screen:getWidth()
-    local screen_h = Screen:getHeight()
-    local board_w = math.min(screen_w - 40, 1020)
+    local screen_w = self.dimen.w
+    local screen_h = self.dimen.h
+    local pad_x = 28
+    local board_w = screen_w - (pad_x * 2)
     local p = Engine.puzzle
 
-    -- 1. Header Bar
+    -- 1. Top Header Bar
     local is_solved = not not (Engine.solved_map[Engine.current_level] and Engine.solved_map[Engine.current_level].solved)
     local is_perfect = is_solved and Engine.solved_map[Engine.current_level].perfect
 
-    local title_text = "TWIXTLE #" .. Engine.current_level
+    local title_str = "TWIXTLE #" .. Engine.current_level
     if is_perfect then
-        title_text = title_text .. " ★"
+        title_str = title_str .. " ★"
     elseif is_solved then
-        title_text = title_text .. " ✓"
+        title_str = title_str .. " ✓"
     end
 
-    local header_left = TextWidget:new{
-        text = title_text,
+    local title_widget = TextWidget:new{
+        text = title_str,
         face = Font:getFace("tfont", 26),
         bold = true,
     }
 
-    local nav_prev = Button:new{
-        text = " ◀ ",
+    local level_tag = TextWidget:new{
+        text = string.format("Level %d / %d", Engine.current_level, #Puzzles),
+        face = Font:getFace("smallinfofont", 16),
+        fgcolor = Blitbuffer.COLOR_DARK_GRAY,
+    }
+
+    local header_left = VerticalGroup:new{
+        title_widget,
+        level_tag,
+    }
+
+    local btn_reset = Button:new{
+        text = " ↺ RESET ",
         text_font_face = "tfont",
-        text_font_size = 20,
+        text_font_size = 18,
         bordersize = 2,
-        radius = 4,
+        radius = 6,
         padding = 8,
-        enabled = Engine.current_level > 1,
         callback = function()
-            Engine:loadLevel(Engine.current_level - 1)
+            Engine:resetLevel()
             self:refresh()
         end,
     }
 
-    local nav_level = Button:new{
-        text = string.format(" %d / %d ▾ ", Engine.current_level, #Puzzles),
+    local btn_select = Button:new{
+        text = " ▦ SELECT ",
         text_font_face = "tfont",
-        text_font_size = 20,
+        text_font_size = 18,
         bordersize = 2,
-        radius = 4,
+        radius = 6,
         padding = 8,
         callback = function()
             self:openLevelSelectMenu()
         end,
     }
 
-    local nav_next = Button:new{
-        text = " ▶ ",
+    local btn_exit = Button:new{
+        text = " ✕ EXIT ",
         text_font_face = "tfont",
-        text_font_size = 20,
+        text_font_size = 18,
         bordersize = 2,
-        radius = 4,
-        padding = 8,
-        enabled = Engine.current_level < #Puzzles and (Engine.current_level < Engine.unlocked_level or is_solved),
-        callback = function()
-            Engine:loadLevel(Engine.current_level + 1)
-            self:refresh()
-        end,
-    }
-
-    local nav_close = Button:new{
-        text = " ✕ ",
-        text_font_face = "tfont",
-        text_font_size = 20,
-        bordersize = 2,
-        radius = 4,
+        radius = 6,
         padding = 8,
         callback = function()
             self:onClose()
@@ -136,321 +145,459 @@ function TwixtleScreen:buildUI()
     }
 
     local header_right = HorizontalGroup:new{
-        nav_prev,
-        HorizontalSpan:new{ width = 6 },
-        nav_level,
-        HorizontalSpan:new{ width = 6 },
-        nav_next,
-        HorizontalSpan:new{ width = 14 },
-        nav_close,
+        btn_reset,
+        HorizontalSpan:new{ width = 8 },
+        btn_select,
+        HorizontalSpan:new{ width = 8 },
+        btn_exit,
     }
 
-    local header_space = board_w - header_left:getSize().w - header_right:getSize().w
+    local header_gap = board_w - header_left:getSize().w - header_right:getSize().w
     local header_bar = HorizontalGroup:new{
+        HorizontalSpan:new{ width = pad_x },
         header_left,
-        HorizontalSpan:new{ width = math.max(10, header_space) },
+        HorizontalSpan:new{ width = math.max(10, header_gap) },
         header_right,
+        HorizontalSpan:new{ width = pad_x },
     }
 
-    -- 2. Board Elements
-    local start_widget = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 48 },
-        TextWidget:new{
-            text = "START:   " .. format_spaced_word(p.start),
-            face = Font:getFace("tfont", 28),
-            bold = true,
-        }
-    }
+    -- 2. Word Chain Board Elements
+    local board_items = {}
 
-    local function makeArrow()
-        return CenterContainer:new{
-            dimen = Geom:new{ w = board_w, h = 26 },
-            TextWidget:new{
-                text = "↓",
-                face = Font:getFace("cfont", 22),
-            }
-        }
-    end
-
-    local function makeRow(num)
-        local is_active = (Engine.active_step == num and not Engine.is_solved)
-        local confirmed_word = Engine.row_inputs[num]
-        local display_text = ""
-
-        if confirmed_word ~= "" then
-            display_text = format_spaced_word(confirmed_word)
-        elseif is_active then
-            if Engine.current_input ~= "" then
-                display_text = format_spaced_word(Engine.current_input) .. "   |"
-            else
-                display_text = "|________________________________"
+    -- Helper to build HCAV Action Pills
+    local function build_action_pills(step_idx)
+        local available_actions = {}
+        local all = { "homophone", "compound", "anagram", "verb" }
+        for _, act in ipairs(all) do
+            local used = false
+            for prev = 1, step_idx - 1 do
+                if Engine.chosen_moves[prev] == act then
+                    used = true
+                    break
+                end
             end
-        else
-            display_text = "________________________________"
+            if not used then
+                table.insert(available_actions, act)
+            end
         end
 
-        local line_group = HorizontalGroup:new{
-            HorizontalSpan:new{ width = 40 },
-            TextWidget:new{
-                text = num .. ".  ",
-                face = Font:getFace("tfont", 24),
-                bold = true,
-            },
-            TextWidget:new{
-                text = display_text,
-                face = Font:getFace("tfont", 24),
-                bold = true,
-            },
-        }
+        local pill_gap = 12
+        local total_gaps = (#available_actions - 1) * pill_gap
+        local pill_w = math.min(230, math.floor((board_w - total_gaps) / #available_actions))
+        local pill_h = 44
+
+        local pill_widgets = {}
+        for idx, act in ipairs(available_actions) do
+            local is_selected = (Engine.selected_action == act)
+            local btn = Button:new{
+                text = ACTION_NAMES[act] or act,
+                text_font_face = "tfont",
+                text_font_size = 19,
+                text_font_bold = true,
+                width = pill_w,
+                height = pill_h,
+                bordersize = 2,
+                radius = 8,
+                padding = 4,
+                callback = function()
+                    Engine:selectAction(act)
+                    self:refresh()
+                end,
+            }
+            if is_selected then
+                btn[1].background = Blitbuffer.COLOR_BLACK
+                btn.label_widget.fgcolor = Blitbuffer.COLOR_WHITE
+            else
+                btn[1].background = Blitbuffer.COLOR_WHITE
+                btn.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
+            end
+
+            table.insert(pill_widgets, btn)
+            if idx < #available_actions then
+                table.insert(pill_widgets, HorizontalSpan:new{ width = pill_gap })
+            end
+        end
 
         return CenterContainer:new{
-            dimen = Geom:new{ w = board_w, h = 48 },
-            line_group,
+            dimen = Geom:new{ w = screen_w, h = pill_h },
+            HorizontalGroup:new(pill_widgets),
         }
     end
 
-    local row1 = makeRow(1)
-    local row2 = makeRow(2)
-    local row3 = makeRow(3)
-    local row4 = makeRow(4)
+    -- Helper to build locked committed badge
+    local function build_committed_badge(action_name)
+        local badge = Button:new{
+            text = (ACTION_NAMES[action_name] or action_name):upper(),
+            text_font_face = "tfont",
+            text_font_size = 17,
+            text_font_bold = true,
+            width = math.min(200, math.floor(board_w / 3)),
+            height = 36,
+            bordersize = 2,
+            radius = 6,
+            padding = 4,
+            enabled = false,
+        }
+        badge[1].background = Blitbuffer.COLOR_BLACK
+        badge.label_widget.fgcolor = Blitbuffer.COLOR_WHITE
 
-    local end_widget = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 48 },
+        return CenterContainer:new{
+            dimen = Geom:new{ w = screen_w, h = 38 },
+            badge,
+        }
+    end
+
+    -- START Word
+    table.insert(board_items, CenterContainer:new{
+        dimen = Geom:new{ w = screen_w, h = 42 },
         TextWidget:new{
-            text = "END:   " .. format_spaced_word(p["end"]),
+            text = "START:  " .. format_spaced_word(p.start),
+            face = Font:getFace("tfont", 30),
+            bold = true,
+        },
+    })
+
+    table.insert(board_items, VerticalSpan:new{ width = 12 })
+    if Engine.chosen_moves[1] then
+        table.insert(board_items, build_committed_badge(Engine.chosen_moves[1]))
+        table.insert(board_items, VerticalSpan:new{ width = 10 })
+    end
+    table.insert(board_items, CenterContainer:new{
+        dimen = Geom:new{ w = screen_w, h = 26 },
+        TextWidget:new{
+            text = "↓",
+            face = Font:getFace("tfont", 22),
+            bold = true,
+        },
+    })
+    table.insert(board_items, VerticalSpan:new{ width = 12 })
+
+    -- Steps 1, 2, 3
+    for s = 1, 3 do
+        local is_current = (Engine.active_step == s and not Engine.is_solved)
+        local is_filled = (Engine.row_inputs[s] ~= "")
+
+        local num_widget = TextWidget:new{
+            text = string.format("%d.", s),
             face = Font:getFace("tfont", 28),
             bold = true,
         }
-    }
+        local num_w = num_widget:getSize().w
+        local line_w = board_w - num_w - 14
 
-    -- 3. Action Bar (UNDO | HCAV Status Box | HINT)
-    local undo_btn = Button:new{
-        text = "[ UNDO ]",
+        local word_text = " "
+        if is_current then
+            word_text = format_spaced_word(Engine.current_input) .. " |"
+        elseif is_filled then
+            word_text = format_spaced_word(Engine.row_inputs[s])
+        end
+
+        local word_widget = TextWidget:new{
+            text = word_text,
+            face = Font:getFace("tfont", 28),
+            bold = true,
+        }
+
+        local underline = FrameContainer:new{
+            bordersize = 0,
+            background = Blitbuffer.COLOR_BLACK,
+            width = line_w,
+            height = 2,
+            HorizontalSpan:new{ width = line_w },
+        }
+
+        local input_line_column = VerticalGroup:new{
+            align = "left",
+            word_widget,
+            VerticalSpan:new{ width = 6 },
+            underline,
+        }
+
+        local step_row = HorizontalGroup:new{
+            HorizontalSpan:new{ width = pad_x },
+            num_widget,
+            HorizontalSpan:new{ width = 12 },
+            input_line_column,
+        }
+        table.insert(board_items, step_row)
+
+        if is_current then
+            table.insert(board_items, VerticalSpan:new{ width = 14 })
+            table.insert(board_items, build_action_pills(s))
+            table.insert(board_items, VerticalSpan:new{ width = 14 })
+        else
+            table.insert(board_items, VerticalSpan:new{ width = 20 })
+        end
+
+        -- Down arrow & badge for next transition
+        local next_action = (s < 3) and Engine.chosen_moves[s + 1] or Engine.chosen_moves[4]
+        if next_action then
+            table.insert(board_items, build_committed_badge(next_action))
+            table.insert(board_items, VerticalSpan:new{ width = 10 })
+        end
+        table.insert(board_items, CenterContainer:new{
+            dimen = Geom:new{ w = screen_w, h = 26 },
+            TextWidget:new{
+                text = "↓",
+                face = Font:getFace("tfont", 22),
+                bold = true,
+            },
+        })
+        table.insert(board_items, VerticalSpan:new{ width = 12 })
+    end
+
+    -- END Word
+    table.insert(board_items, CenterContainer:new{
+        dimen = Geom:new{ w = screen_w, h = 42 },
+        TextWidget:new{
+            text = "END:  " .. format_spaced_word(p["end"]),
+            face = Font:getFace("tfont", 30),
+            bold = true,
+        },
+    })
+
+    local board_group = VerticalGroup:new(board_items)
+
+    -- 3. Action / Feedback Bar (Above Keyboard)
+    local btn_undo = Button:new{
+        text = " [ UNDO ] ",
         text_font_face = "tfont",
-        text_font_size = 20,
+        text_font_size = 19,
         text_font_bold = true,
         bordersize = 2,
         radius = 6,
-        width = 175,
-        height = 80,
-        enabled = not Engine.is_solved,
+        padding = 10,
         callback = function()
             Engine:undo()
             self:refresh()
         end,
     }
 
-    local hint_btn = Button:new{
-        text = "[ HINT ]",
+    local status_str = "[ Select rule above & type word, then tap ↵ ENTER ]"
+    local status_color = Blitbuffer.COLOR_DARK_GRAY
+    local status_bold = false
+
+    if Engine.is_solved then
+        status_str = "★ LEVEL SOLVED! ★"
+        status_color = Blitbuffer.COLOR_BLACK
+        status_bold = true
+    elseif Engine.message ~= "" then
+        status_str = (Engine.is_error and "⚠ " or "") .. Engine.message
+        status_color = Blitbuffer.COLOR_BLACK
+        status_bold = true
+    elseif #Engine.current_input > 0 then
+        if Engine.selected_action then
+            status_str = string.format("[ %s selected • Tap ↵ ENTER to submit ]", (ACTION_NAMES[Engine.selected_action] or Engine.selected_action):upper())
+        else
+            status_str = "[ Select rule above, then tap ↵ ENTER ]"
+        end
+    end
+
+    local status_widget = TextWidget:new{
+        text = status_str,
+        face = Font:getFace("smallinfofont", 16),
+        fgcolor = status_color,
+        bold = status_bold,
+    }
+
+    local btn_hint = Button:new{
+        text = " [ HINT ] ",
         text_font_face = "tfont",
-        text_font_size = 20,
+        text_font_size = 19,
         text_font_bold = true,
         bordersize = 2,
         radius = 6,
-        width = 175,
-        height = 80,
-        enabled = not Engine.is_solved,
+        padding = 10,
         callback = function()
             Engine:hint()
             self:refresh()
         end,
     }
 
-    local hcav_status = Engine:getHCAVStatus()
-    local homo_icon = hcav_status.homophone and "◉ " or "Ⓗ "
-    local comp_icon = hcav_status.compound and "◉ " or "Ⓒ "
-    local anag_icon = hcav_status.anagram and "◉ " or "Ⓐ "
-    local verb_icon = hcav_status.verb and "◉ " or "Ⓥ "
-
-    local hcav_top = HorizontalGroup:new{
-        Button:new{
-            text = homo_icon .. "HOMOPHONE",
-            text_font_face = "tfont",
-            text_font_size = 18,
-            bordersize = 0,
-            width = 240,
-            height = 36,
-            callback = function()
-                self:showRuleDialog("homophone")
-            end,
-        },
-        HorizontalSpan:new{ width = 10 },
-        Button:new{
-            text = comp_icon .. "COMPOUND",
-            text_font_face = "tfont",
-            text_font_size = 18,
-            bordersize = 0,
-            width = 240,
-            height = 36,
-            callback = function()
-                self:showRuleDialog("compound")
-            end,
-        },
+    local bar_gap = board_w - btn_undo:getSize().w - status_widget:getSize().w - btn_hint:getSize().w
+    local action_bar = HorizontalGroup:new{
+        HorizontalSpan:new{ width = pad_x },
+        btn_undo,
+        HorizontalSpan:new{ width = math.max(6, math.floor(bar_gap / 2)) },
+        status_widget,
+        HorizontalSpan:new{ width = math.max(6, math.floor(bar_gap / 2)) },
+        btn_hint,
+        HorizontalSpan:new{ width = pad_x },
     }
 
-    local hcav_bot = HorizontalGroup:new{
-        Button:new{
-            text = anag_icon .. "ANAGRAM",
+    -- 4. Full Width Touch Keyboard Pinned to Bottom
+    local kb_pad_x = 8
+    local kb_w = screen_w - (kb_pad_x * 2)
+    local gap = 6
+    local key_h = 74
+
+    -- Row 1: 10 keys (Q W E R T Y U I O P)
+    local r1_keys = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" }
+    local r1_key_w = math.floor((kb_w - (9 * gap)) / 10)
+    local r1_widgets = { HorizontalSpan:new{ width = kb_pad_x } }
+    for i, k in ipairs(r1_keys) do
+        table.insert(r1_widgets, Button:new{
+            text = k,
             text_font_face = "tfont",
-            text_font_size = 18,
-            bordersize = 0,
-            width = 240,
-            height = 36,
-            callback = function()
-                self:showRuleDialog("anagram")
-            end,
-        },
-        HorizontalSpan:new{ width = 10 },
-        Button:new{
-            text = verb_icon .. "VERB",
-            text_font_face = "tfont",
-            text_font_size = 18,
-            bordersize = 0,
-            width = 240,
-            height = 36,
-            callback = function()
-                self:showRuleDialog("verb")
-            end,
-        },
-    }
-
-    local hcav_box = FrameContainer:new{
-        bordersize = 2,
-        radius = 6,
-        padding = 6,
-        margin = 0,
-        VerticalGroup:new{
-            align = "center",
-            hcav_top,
-            VerticalSpan:new{ width = 4 },
-            hcav_bot,
-        }
-    }
-
-    local action_bar = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 92 },
-        HorizontalGroup:new{
-            undo_btn,
-            HorizontalSpan:new{ width = 18 },
-            hcav_box,
-            HorizontalSpan:new{ width = 18 },
-            hint_btn,
-        }
-    }
-
-    -- 4. Auto-submits strip & Feedback Message
-    local banner_text = "[ Auto-submits on correct word ]"
-    if Engine.message and Engine.message ~= "" then
-        banner_text = Engine.message
-    end
-
-    local auto_strip = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 34 },
-        FrameContainer:new{
-            bordersize = 1,
-            radius = 4,
-            padding = 4,
-            background = Blitbuffer.COLOR_WHITE,
-            TextWidget:new{
-                text = banner_text,
-                face = Font:getFace("cfont", 18),
-                bold = (Engine.message and Engine.message ~= ""),
-            }
-        }
-    }
-
-    -- 5. Touch Keyboard (QWERTY)
-    local function makeKey(ch, w)
-        return Button:new{
-            text = ch,
-            text_font_face = "tfont",
-            text_font_size = 24,
+            text_font_size = 26,
             text_font_bold = true,
+            width = r1_key_w,
+            height = key_h,
             bordersize = 2,
             radius = 6,
-            width = w,
-            height = 76,
-            enabled = not Engine.is_solved,
+            padding = 2,
             callback = function()
-                Engine:handleKey(ch)
+                Engine:handleKey(k)
                 self:refresh()
-                if Engine.is_solved then
-                    self:showVictoryDialog()
-                end
             end,
-        }
+        })
+        if i < #r1_keys then
+            table.insert(r1_widgets, HorizontalSpan:new{ width = gap })
+        end
     end
+    table.insert(r1_widgets, HorizontalSpan:new{ width = kb_pad_x })
+    local row1_group = HorizontalGroup:new(r1_widgets)
 
-    local kb_r1_keys = {}
-    local r1_letters = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" }
-    for i, ch in ipairs(r1_letters) do
-        if i > 1 then table.insert(kb_r1_keys, HorizontalSpan:new{ width = 6 }) end
-        table.insert(kb_r1_keys, makeKey(ch, 94))
+    -- Row 2: 9 keys (A S D F G H J K L) centered
+    local r2_keys = { "A", "S", "D", "F", "G", "H", "J", "K", "L" }
+    local r2_key_w = r1_key_w
+    local r2_indent = math.floor((kb_w - (9 * r2_key_w + 8 * gap)) / 2)
+    local r2_widgets = { HorizontalSpan:new{ width = kb_pad_x + r2_indent } }
+    for i, k in ipairs(r2_keys) do
+        table.insert(r2_widgets, Button:new{
+            text = k,
+            text_font_face = "tfont",
+            text_font_size = 26,
+            text_font_bold = true,
+            width = r2_key_w,
+            height = key_h,
+            bordersize = 2,
+            radius = 6,
+            padding = 2,
+            callback = function()
+                Engine:handleKey(k)
+                self:refresh()
+            end,
+        })
+        if i < #r2_keys then
+            table.insert(r2_widgets, HorizontalSpan:new{ width = gap })
+        end
     end
-    local kb_r1 = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 80 },
-        HorizontalGroup:new(kb_r1_keys),
-    }
+    table.insert(r2_widgets, HorizontalSpan:new{ width = kb_pad_x + r2_indent })
+    local row2_group = HorizontalGroup:new(r2_widgets)
 
-    local kb_r2_keys = {}
-    local r2_letters = { "A", "S", "D", "F", "G", "H", "J", "K", "L" }
-    for i, ch in ipairs(r2_letters) do
-        if i > 1 then table.insert(kb_r2_keys, HorizontalSpan:new{ width = 6 }) end
-        table.insert(kb_r2_keys, makeKey(ch, 94))
-    end
-    local kb_r2 = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 80 },
-        HorizontalGroup:new(kb_r2_keys),
-    }
-
-    local kb_r3_keys = {}
+    -- Row 3: [ ⌫ BACK ]  Z  X  C  V  B  N  M  [ ↵ ENTER ]
     local r3_letters = { "Z", "X", "C", "V", "B", "N", "M" }
-    for i, ch in ipairs(r3_letters) do
-        if i > 1 then table.insert(kb_r3_keys, HorizontalSpan:new{ width = 6 }) end
-        table.insert(kb_r3_keys, makeKey(ch, 94))
+    local r3_let_w = r1_key_w
+    local side_w = math.floor((kb_w - (7 * r3_let_w + 8 * gap)) / 2)
+
+    local btn_back = Button:new{
+        text = " ⌫ ",
+        text_font_face = "tfont",
+        text_font_size = 24,
+        text_font_bold = true,
+        width = side_w,
+        height = key_h,
+        bordersize = 2,
+        radius = 6,
+        padding = 2,
+        callback = function()
+            Engine:handleKey("⌫")
+            self:refresh()
+        end,
+    }
+
+    local btn_enter = Button:new{
+        text = " ↵ ENTER ",
+        text_font_face = "tfont",
+        text_font_size = 20,
+        text_font_bold = true,
+        width = side_w,
+        height = key_h,
+        bordersize = 2,
+        radius = 6,
+        padding = 2,
+        callback = function()
+            Engine:handleKey("↵")
+            self:refresh()
+        end,
+    }
+    if #Engine.current_input > 0 and Engine.selected_action then
+        btn_enter[1].background = Blitbuffer.COLOR_BLACK
+        btn_enter.label_widget.fgcolor = Blitbuffer.COLOR_WHITE
     end
-    table.insert(kb_r3_keys, HorizontalSpan:new{ width = 6 })
-    table.insert(kb_r3_keys, makeKey("⌫", 136))
-    local kb_r3 = CenterContainer:new{
-        dimen = Geom:new{ w = board_w, h = 80 },
-        HorizontalGroup:new(kb_r3_keys),
+
+    local r3_widgets = {
+        HorizontalSpan:new{ width = kb_pad_x },
+        btn_back,
+        HorizontalSpan:new{ width = gap },
+    }
+    for _, k in ipairs(r3_letters) do
+        table.insert(r3_widgets, Button:new{
+            text = k,
+            text_font_face = "tfont",
+            text_font_size = 26,
+            text_font_bold = true,
+            width = r3_let_w,
+            height = key_h,
+            bordersize = 2,
+            radius = 6,
+            padding = 2,
+            callback = function()
+                Engine:handleKey(k)
+                self:refresh()
+            end,
+        })
+        table.insert(r3_widgets, HorizontalSpan:new{ width = gap })
+    end
+    table.insert(r3_widgets, btn_enter)
+    table.insert(r3_widgets, HorizontalSpan:new{ width = kb_pad_x })
+    local row3_group = HorizontalGroup:new(r3_widgets)
+
+    local keyboard_group = VerticalGroup:new{
+        row1_group,
+        VerticalSpan:new{ width = gap },
+        row2_group,
+        VerticalSpan:new{ width = gap },
+        row3_group,
     }
 
-    local keyboard = VerticalGroup:new{
-        align = "center",
-        kb_r1,
-        VerticalSpan:new{ width = 6 },
-        kb_r2,
-        VerticalSpan:new{ width = 6 },
-        kb_r3,
-    }
-
-    self.layout = VerticalGroup:new{
-        align = "center",
-        VerticalSpan:new{ width = 20 },
+    -- 5. Full Screen Assembly with Dynamic Spacing
+    local top_section = VerticalGroup:new{
+        VerticalSpan:new{ width = 14 },
         header_bar,
         VerticalSpan:new{ width = 16 },
-        start_widget,
-        makeArrow(),
-        row1,
-        makeArrow(),
-        row2,
-        makeArrow(),
-        row3,
-        makeArrow(),
-        row4,
-        makeArrow(),
-        end_widget,
-        VerticalSpan:new{ width = 20 },
-        action_bar,
-        VerticalSpan:new{ width = 10 },
-        auto_strip,
-        VerticalSpan:new{ width = 14 },
-        keyboard,
-        VerticalSpan:new{ width = 20 },
+        board_group,
     }
 
+    local bottom_section = VerticalGroup:new{
+        action_bar,
+        VerticalSpan:new{ width = 12 },
+        keyboard_group,
+        VerticalSpan:new{ width = 4 },
+    }
+
+    local top_h = top_section:getSize().h
+    local bot_h = bottom_section:getSize().h
+    local flex_spacer_h = math.max(10, screen_h - top_h - bot_h)
+
+    self.layout = VerticalGroup:new{
+        top_section,
+        VerticalSpan:new{ width = flex_spacer_h },
+        bottom_section,
+    }
+
+    self.layout.dimen = self.dimen
     self[1] = self.layout
+
+    if Engine.is_solved and not self._victory_dialog_shown then
+        self._victory_dialog_shown = true
+        UIManager:nextTick(function()
+            self:showVictoryDialog()
+        end)
+    elseif not Engine.is_solved then
+        self._victory_dialog_shown = false
+    end
 end
 
 function TwixtleScreen:refresh()
@@ -506,43 +653,6 @@ function TwixtleScreen:openLevelSelectMenu()
     UIManager:show(self.level_menu)
 end
 
-function TwixtleScreen:showRuleDialog(rule_type)
-    local titles = {
-        homophone = "HOMOPHONE Rule",
-        compound = "COMPOUND Rule",
-        anagram = "ANAGRAM Rule",
-        verb = "VERB FORM Rule",
-    }
-    local descs = {
-        homophone = "Find a word that sounds identical in English but is spelled differently.\n\nExamples:\n• write ➔ right\n• sea ➔ see\n• thyme ➔ time\n• side ➔ sighed",
-        compound = "Jump to a word that pairs with the current word to form a single closed compound word.\n\nExamples:\n• sea ➔ horse (seahorse)\n• watch ➔ tower (watchtower)\n• worm ➔ book (bookworm)\n• time ➔ table (timetable)",
-        anagram = "Rearrange all the letters into a different valid English word.\n\nExamples:\n• heart ➔ earth\n• table ➔ bleat\n• shore ➔ horse\n• arc ➔ car",
-        verb = "Switch to a different grammatical inflection of the same verb.\n\nExamples:\n• bleat ➔ bleated\n• walk ➔ walks, walked, walking\n• write ➔ writes, wrote, written\n• run ➔ ran, running",
-    }
-
-    local dialog
-    dialog = ButtonDialog:new{
-        title = titles[rule_type] or "Twixtle Rule",
-        title_align = "center",
-        content = TextWidget:new{
-            text = descs[rule_type] or "",
-            face = Font:getFace("smallinfofont"),
-            width = math.floor(Screen:getWidth() * 0.8),
-        },
-        buttons = {
-            {
-                {
-                    text = _("Got it!"),
-                    callback = function()
-                        UIManager:close(dialog)
-                    end,
-                },
-            },
-        },
-    }
-    UIManager:show(dialog)
-end
-
 function TwixtleScreen:showVictoryDialog()
     local p = Engine.puzzle
     local solved_info = Engine.solved_map[Engine.current_level]
@@ -550,10 +660,11 @@ function TwixtleScreen:showVictoryDialog()
 
     local chain_lines = {
         is_perfect and "★ PERFECT SOLVE! No hints used.\n" or "✓ Level Solved!\n",
-        string.format("1. %s ➔ %s (%s)", p.solution[1]:upper(), p.solution[2]:upper(), p.moves[1]:upper()),
-        string.format("2. %s ➔ %s (%s)", p.solution[2]:upper(), p.solution[3]:upper(), p.moves[2]:upper()),
-        string.format("3. %s ➔ %s (%s)", p.solution[3]:upper(), p.solution[4]:upper(), p.moves[3]:upper()),
-        string.format("4. %s ➔ %s (%s)", p.solution[4]:upper(), p.solution[5]:upper(), p.moves[4]:upper()),
+        string.format("START: %s", p.start:upper()),
+        string.format("1. %s (%s)", Engine.row_inputs[1], (Engine.chosen_moves[1] or ""):upper()),
+        string.format("2. %s (%s)", Engine.row_inputs[2], (Engine.chosen_moves[2] or ""):upper()),
+        string.format("3. %s (%s)", Engine.row_inputs[3], (Engine.chosen_moves[3] or ""):upper()),
+        string.format("END: %s (%s)", p["end"]:upper(), (Engine.chosen_moves[4] or ""):upper()),
     }
 
     local dialog
