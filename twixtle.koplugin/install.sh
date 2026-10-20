@@ -63,6 +63,8 @@ EOF
 
 # 3. Install KOReader Plugin
 echo "📖 Installing KOReader plugin to: $KOPLUGIN_DIR"
+rm -rf "$KOPLUGIN_DIR"
+rm -f "$KOBO_MOUNT/.adds/koreader/plugins/._twixtle"*
 mkdir -p "$KOPLUGIN_DIR"
 cp "$SCRIPT_DIR/_meta.lua" "$KOPLUGIN_DIR/"
 cp "$SCRIPT_DIR/main.lua" "$KOPLUGIN_DIR/"

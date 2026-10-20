@@ -464,6 +464,8 @@ function TwixtleScreen:onClose()
     UIManager:close(self)
     if self.plugin and self.plugin.onScreenClosed then
         self.plugin:onScreenClosed()
+    else
+        UIManager:quit(0)
     end
     return true
 end

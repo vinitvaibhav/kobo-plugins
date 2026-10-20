@@ -104,6 +104,8 @@ EOF
     # 3. KOReader Plugin (.adds/koreader/plugins/twixtle.koplugin)
     TWIXTLE_DEST="$PLUGINS_DIR/twixtle.koplugin"
     echo "  📖 Deploying KOReader plugin to: $TWIXTLE_DEST"
+    rm -rf "$TWIXTLE_DEST"
+    rm -f "$PLUGINS_DIR/._twixtle"*
     mkdir -p "$TWIXTLE_DEST"
     cp "$SCRIPT_DIR/twixtle.koplugin/_meta.lua" "$TWIXTLE_DEST/"
     cp "$SCRIPT_DIR/twixtle.koplugin/main.lua" "$TWIXTLE_DEST/"
