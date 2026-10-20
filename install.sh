@@ -70,8 +70,40 @@ fi
 # Install twixtle if selected
 if [ "$TARGET" = "all" ] || [ "$TARGET" = "twixtle" ]; then
     echo ""
-    echo "🎮 Installing twixtle.koplugin (100% Offline KOReader Game)..."
+    echo "🎮 Installing Twixtle v3 (100% Offline Standalone & KOReader Game)..."
+
+    # 1. Standalone NickelMenu application (.adds/twixtle)
+    STANDALONE_DIR="$KOBO_MOUNT/.adds/twixtle"
+    NM_DIR="$KOBO_MOUNT/.adds/nm"
+    echo "  📦 Deploying Standalone NickelMenu app to: $STANDALONE_DIR"
+    mkdir -p "$STANDALONE_DIR"
+    # Remove deprecated HTML/JS files from legacy web-based twixtle if present
+    rm -f "$STANDALONE_DIR/index.html" "$STANDALONE_DIR/app.js" "$STANDALONE_DIR/app.css" "$STANDALONE_DIR/puzzles.js"
+    rm -rf "$STANDALONE_DIR/dict" "$STANDALONE_DIR/tools"
+
+    cp "$SCRIPT_DIR/twixtle.koplugin/twixtle.sh" "$STANDALONE_DIR/"
+    chmod +x "$STANDALONE_DIR/twixtle.sh"
+    cp "$SCRIPT_DIR/twixtle.koplugin/standalone.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/_meta.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/engine.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/dictionary.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/dict_data.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/words.txt" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/puzzles.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/storage.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/twixtle_screen.lua" "$STANDALONE_DIR/"
+    cp "$SCRIPT_DIR/twixtle.koplugin/README.md" "$STANDALONE_DIR/"
+
+    # 2. NickelMenu Shortcut (.adds/nm/twixtle)
+    echo "  🔘 Configuring NickelMenu direct shortcut in: $NM_DIR/twixtle"
+    mkdir -p "$NM_DIR"
+    cat << 'EOF' > "$NM_DIR/twixtle"
+menu_item :main :Twixtle :cmd_spawn :quiet:exec /mnt/onboard/.adds/twixtle/twixtle.sh
+EOF
+
+    # 3. KOReader Plugin (.adds/koreader/plugins/twixtle.koplugin)
     TWIXTLE_DEST="$PLUGINS_DIR/twixtle.koplugin"
+    echo "  📖 Deploying KOReader plugin to: $TWIXTLE_DEST"
     mkdir -p "$TWIXTLE_DEST"
     cp "$SCRIPT_DIR/twixtle.koplugin/_meta.lua" "$TWIXTLE_DEST/"
     cp "$SCRIPT_DIR/twixtle.koplugin/main.lua" "$TWIXTLE_DEST/"
@@ -82,21 +114,14 @@ if [ "$TARGET" = "all" ] || [ "$TARGET" = "twixtle" ]; then
     cp "$SCRIPT_DIR/twixtle.koplugin/puzzles.lua" "$TWIXTLE_DEST/"
     cp "$SCRIPT_DIR/twixtle.koplugin/storage.lua" "$TWIXTLE_DEST/"
     cp "$SCRIPT_DIR/twixtle.koplugin/twixtle_screen.lua" "$TWIXTLE_DEST/"
-
-    # Remove deprecated buggy browser version if present
-    if [ -d "$KOBO_MOUNT/.adds/twixtle" ]; then
-        echo "  🧹 Removing deprecated browser-based twixtle web app from .adds/twixtle..."
-        rm -rf "$KOBO_MOUNT/.adds/twixtle"
-    fi
-    if [ -f "$KOBO_MOUNT/.adds/nm/twixtle" ]; then
-        echo "  🧹 Removing legacy NickelMenu browser shortcut..."
-        rm -f "$KOBO_MOUNT/.adds/nm/twixtle"
-    fi
+    cp "$SCRIPT_DIR/twixtle.koplugin/README.md" "$TWIXTLE_DEST/"
 
     if command -v dot_clean >/dev/null 2>&1; then
+        dot_clean "$STANDALONE_DIR"
+        dot_clean "$NM_DIR"
         dot_clean "$TWIXTLE_DEST"
     fi
-    echo "  [✓] twixtle.koplugin installed."
+    echo "  [✓] Twixtle v3 (Standalone & KOReader) successfully installed."
 fi
 
 # Flush all disk buffers

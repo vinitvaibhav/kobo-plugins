@@ -8,24 +8,27 @@ A curated collection of production-ready plugins, automation tools, and games fo
 
 | Plugin | Path | Description | Status |
 | :--- | :--- | :--- | :--- |
-| **`twixtle.koplugin`** | [`twixtle.koplugin/`](twixtle.koplugin/) | **100% Offline Native Word Chain Puzzle Game** for KOReader (Carta 1300 E-Ink optimized). 550 verified progressive levels, 4 transformation rules, virtual touch keyboard, hint reveals, and gold-star perfect tracking. Zero Wi-Fi dependencies. | ✅ **Active** |
+| **`twixtle`** | [`twixtle.koplugin/`](twixtle.koplugin/) | **100% Offline Word Chain Puzzle Game** for Kobo Clara BW (NickelMenu Standalone & KOReader). 550 verified progressive levels, 4 transformation rules, virtual touch keyboard, hint reveals, auto-submit. Zero Wi-Fi dependencies. | ✅ **Active** |
 | **`kobostatsmerge.koplugin`** | [`kobostatsmerge.koplugin/`](kobostatsmerge.koplugin/) | **Seamless 2-Way Reading Stats Synchronization** between KOReader and Kobo Stock App (Nickel). Unifies reading hours, sessions, and activity stats across all supported formats with full database safety nets. | ✅ **Active** |
 
 ---
 
-## 🎮 Featured: `twixtle.koplugin` (Word Puzzle Game)
+## 🎮 Featured: `twixtle` (Word Puzzle Game v3)
 
-### Why a Native KOReader Plugin?
+### Why Native Lua / Standalone vs Browser?
 Earlier web-based versions run via Kobo's stock browser suffered from:
 1. **Wi-Fi Gatekeeping**: Kobo's browser refuses to open or prompts for internet even for local `file:///` URLs.
 2. **Outdated QtWebKit Engine**: Missing modern JavaScript (ES6+) causes scripts to throw syntax errors on load, rendering touch screens frozen and unresponsive.
 
-**`twixtle.koplugin`** runs as a native Lua widget directly within KOReader:
+**`Twixtle v3`** runs natively on Kobo hardware:
 - 🚀 **100% Offline**: Never requires Wi-Fi or internet connection.
-- ⚡ **Instant Touch Response**: Built with native KOReader UI widgets (`InputContainer`, `ButtonTable`, `Menu`).
+- 🔘 **Direct from NickelMenu**: Launch directly from the home screen (`NickelMenu` ➔ `Twixtle`) without needing to open KOReader, just like built-in Kobo games!
+- 📖 **Inside KOReader**: Also fully accessible inside KOReader under `Tools` ➔ `More tools` ➔ `Twixtle`.
+- ⚡ **Instant Touch Response**: Native KOReader touch event pipeline with responsive full-touch QWERTY keyboard.
+- 🎯 **Auto-Submits on Valid Word**: Instant feedback when the correct word is typed without needing an extra Enter key.
 - 🔋 **Zero Battery Drain**: Event-driven rendering on e-ink Carta 1300 displays; zero background CPU usage.
 - 🧩 **550 Progressive Levels**: 2,200 unique 4-step word transformations rigorously verified with automated solvers.
-- 💾 **Progress Persistence**: Unlocked levels and star ratings saved via KOReader's `LuaSettings`.
+- 💾 **Progress Persistence**: Unlocked levels and star ratings saved across restarts.
 
 👉 **[Read the full Twixtle documentation →](twixtle.koplugin/README.md)**
 

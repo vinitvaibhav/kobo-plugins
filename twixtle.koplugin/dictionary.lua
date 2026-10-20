@@ -190,6 +190,24 @@ function Dictionary:is_compound(w1, w2)
     return not not (alts and alts[w2])
 end
 
+function Dictionary:infer_compound_partner(prev, input)
+    if not prev or not input then return nil end
+    prev = prev:lower():gsub("%s+", "")
+    input = input:lower():gsub("%s+", "")
+    if #input <= #prev or input == prev then return nil end
+    local partners = self.comp_map[prev]
+    if not partners then return nil end
+    if input:sub(1, #prev) == prev then
+        local cand = input:sub(#prev + 1)
+        if cand ~= "" and partners[cand] then return cand end
+    end
+    if input:sub(-#prev) == prev then
+        local cand = input:sub(1, -#prev - 1)
+        if cand ~= "" and partners[cand] then return cand end
+    end
+    return nil
+end
+
 function Dictionary:is_verb_form(w1, w2)
     local g1 = self.verb_by_word[w1]
     local g2 = self.verb_by_word[w2]

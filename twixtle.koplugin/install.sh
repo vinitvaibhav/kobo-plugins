@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# install.sh - Installs twixtle.koplugin onto a connected Kobo e-reader
+# install.sh - Installs Twixtle onto a connected Kobo e-reader (Clara BW & all models)
+# Installs both:
+#   1. Standalone NickelMenu launcher in .adds/twixtle (accessible directly from home screen)
+#   2. Native KOReader plugin in .adds/koreader/plugins/twixtle.koplugin
 set -e
 
 # Detect Kobo mount point
@@ -17,7 +20,7 @@ fi
 if [ -z "$KOBO_MOUNT" ]; then
     echo "❌ Error: Connected Kobo e-reader mount point not detected."
     echo ""
-    echo "Please connect your Kobo via USB, tap 'Connect', then run:"
+    echo "Please connect your Kobo via USB, tap 'Connect' on screen, then run:"
     echo "  ./install.sh [path_to_kobo_mount]"
     echo ""
     echo "Examples:"
@@ -26,51 +29,68 @@ if [ -z "$KOBO_MOUNT" ]; then
     exit 1
 fi
 
-DEST_DIR="$KOBO_MOUNT/.adds/koreader/plugins/twixtle.koplugin"
-
-echo "================================================================="
-echo " Installing Twixtle KOReader Plugin (Native Lua, 100% Offline)"
-echo " Destination: $DEST_DIR"
-echo "================================================================="
-
-mkdir -p "$DEST_DIR"
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+STANDALONE_DIR="$KOBO_MOUNT/.adds/twixtle"
+KOPLUGIN_DIR="$KOBO_MOUNT/.adds/koreader/plugins/twixtle.koplugin"
+NM_DIR="$KOBO_MOUNT/.adds/nm"
 
-# Copy plugin files
-cp "$SCRIPT_DIR/_meta.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/main.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/engine.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/dictionary.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/dict_data.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/words.txt" "$DEST_DIR/"
-cp "$SCRIPT_DIR/puzzles.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/storage.lua" "$DEST_DIR/"
-cp "$SCRIPT_DIR/twixtle_screen.lua" "$DEST_DIR/"
+echo "================================================================="
+echo " Installing Twixtle v3 (E-Ink Minimal UI, 550 Verified Levels)"
+echo " Kobo Mount: $KOBO_MOUNT"
+echo "================================================================="
 
-# Remove legacy broken web-app files if present to prevent browser confusion
-if [ -d "$KOBO_MOUNT/.adds/twixtle" ]; then
-    echo "🧹 Removing deprecated browser-based twixtle web app from .adds/twixtle..."
-    rm -rf "$KOBO_MOUNT/.adds/twixtle"
-fi
-if [ -f "$KOBO_MOUNT/.adds/nm/twixtle" ]; then
-    echo "🧹 Removing legacy NickelMenu browser shortcut..."
-    rm -f "$KOBO_MOUNT/.adds/nm/twixtle"
-fi
+# 1. Install Standalone App for NickelMenu
+echo "📦 Installing Standalone NickelMenu application to: $STANDALONE_DIR"
+mkdir -p "$STANDALONE_DIR"
+cp "$SCRIPT_DIR/twixtle.sh" "$STANDALONE_DIR/"
+chmod +x "$STANDALONE_DIR/twixtle.sh"
+cp "$SCRIPT_DIR/standalone.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/_meta.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/engine.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/dictionary.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/dict_data.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/words.txt" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/puzzles.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/storage.lua" "$STANDALONE_DIR/"
+cp "$SCRIPT_DIR/twixtle_screen.lua" "$STANDALONE_DIR/"
+
+# 2. Install NickelMenu Shortcut
+echo "🔘 Configuring NickelMenu direct shortcut in: $NM_DIR/twixtle"
+mkdir -p "$NM_DIR"
+cat << 'EOF' > "$NM_DIR/twixtle"
+menu_item :main :Twixtle :cmd_spawn :quiet:exec /mnt/onboard/.adds/twixtle/twixtle.sh
+EOF
+
+# 3. Install KOReader Plugin
+echo "📖 Installing KOReader plugin to: $KOPLUGIN_DIR"
+mkdir -p "$KOPLUGIN_DIR"
+cp "$SCRIPT_DIR/_meta.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/main.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/engine.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/dictionary.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/dict_data.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/words.txt" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/puzzles.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/storage.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/twixtle_screen.lua" "$KOPLUGIN_DIR/"
+cp "$SCRIPT_DIR/README.md" "$KOPLUGIN_DIR/"
 
 # Clean macOS metadata files if on macOS
 if command -v dot_clean >/dev/null 2>&1; then
-    dot_clean "$DEST_DIR"
+    dot_clean "$STANDALONE_DIR"
+    dot_clean "$KOPLUGIN_DIR"
+    dot_clean "$NM_DIR"
 fi
 
 sync
 
 echo ""
-echo "✅ Twixtle KOReader Plugin installed successfully!"
+echo "================================================================="
+echo "✅ Twixtle v3 successfully installed!"
 echo ""
-echo "Next steps:"
-echo " 1. Safely eject your Kobo e-reader."
-echo " 2. Open KOReader on your Kobo."
-echo " 3. Tap top menu ➔ Tools (Search/Gear icon) ➔ More tools ➔ Twixtle"
-echo " 4. Enjoy 550 offline levels!"
+echo "How to launch:"
+echo " 1. Directly from Kobo Home Screen:"
+echo "    Tap 'NickelMenu' ➔ 'Twixtle' (opens instantly without KOReader)"
+echo " 2. Inside KOReader:"
+echo "    Tap top menu ➔ Tools ➔ More tools ➔ Twixtle"
 echo "================================================================="

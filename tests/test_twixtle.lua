@@ -142,52 +142,66 @@ assert_equal(Engine.current_level, 1, "Starts at level 1")
 assert_equal(Engine.unlocked_level, 1, "Unlocked level starts at 1")
 assert_false(Engine.is_solved, "New level must not be solved")
 
--- Test invalid word rejection
+-- Test typing non-matching letters
 Engine:handleKey("Z")
 Engine:handleKey("Z")
 Engine:handleKey("Z")
-Engine:handleKey("ENTER")
-assert_false(Engine.is_solved, "Invalid word 'ZZZ' must not advance")
-assert_true(Engine.is_error, "Must show error for invalid word")
+assert_equal(Engine.current_input, "zzz", "Current input should hold 'zzz'")
+assert_equal(Engine.active_step, 1, "Non-matching word must not auto-submit")
 
 -- Test backspace
 Engine:handleKey("BACKSPACE")
 Engine:handleKey("BACKSPACE")
 Engine:handleKey("BACKSPACE")
-assert_equal(Engine.row_inputs[1], "", "Backspace must clear row input")
+assert_equal(Engine.current_input, "", "Backspace must clear input buffer")
 
 -- Test correct step 1 for Level 1 (arc -> car via anagram)
 for i = 1, #"car" do
     Engine:handleKey(("car"):sub(i, i))
 end
-Engine:handleKey("ENTER")
-assert_equal(Engine.row_inputs[1], "car", "Row 1 should be 'car'")
+assert_equal(Engine.row_inputs[1], "car", "Row 1 should auto-submit 'car'")
 assert_equal(Engine.active_step, 2, "Active step should advance to 2")
+assert_equal(Engine.current_input, "", "Input buffer cleared on auto-submit")
 
 -- Test correct step 2 for Level 1 (car -> side via compound)
 for i = 1, #"side" do
     Engine:handleKey(("side"):sub(i, i))
 end
-Engine:handleKey("ENTER")
-assert_equal(Engine.row_inputs[2], "side", "Row 2 should be 'side'")
+assert_equal(Engine.row_inputs[2], "side", "Row 2 should auto-submit 'side'")
 assert_equal(Engine.active_step, 3, "Active step should advance to 3")
 
--- Test correct step 3 for Level 1 (side -> sighed via homophone, and sighed -> sigh via verb)
+-- Test undo
+Engine:undo()
+assert_equal(Engine.active_step, 2, "Undo should roll back to step 2")
+assert_equal(Engine.row_inputs[2], "", "Row 2 cleared on undo")
+
+-- Re-submit step 2
+for i = 1, #"side" do
+    Engine:handleKey(("side"):sub(i, i))
+end
+assert_equal(Engine.row_inputs[2], "side", "Row 2 re-solved as 'side'")
+
+-- Test hint reveal
+assert_false(Engine.revealed_moves[3], "Move 3 starts unrevealed")
+Engine:hint()
+assert_true(Engine.revealed_moves[3], "Move 3 must be revealed")
+assert_true(Engine.hints_used, "Hints used must be true after revealing move")
+
+-- Test step 3 (side -> sighed via homophone)
 for i = 1, #"sighed" do
     Engine:handleKey(("sighed"):sub(i, i))
 end
-Engine:handleKey("ENTER")
-assert_true(Engine.is_solved, "Level 1 must be solved after step 3 completes chain to 'sigh'")
+assert_equal(Engine.row_inputs[3], "sighed", "Row 3 should auto-submit 'sighed'")
+assert_equal(Engine.active_step, 4, "Active step should advance to 4")
+
+-- Test step 4 (sighed -> sigh via verb, reaching END)
+for i = 1, #"sigh" do
+    Engine:handleKey(("sigh"):sub(i, i))
+end
+assert_equal(Engine.row_inputs[4], "sigh", "Row 4 should auto-submit 'sigh'")
+assert_true(Engine.is_solved, "Level 1 must be solved after step 4 completes")
 assert_equal(Engine.unlocked_level, 2, "Level 2 must be unlocked")
 assert_true(Engine.solved_map[1].solved, "Level 1 marked solved in solved_map")
-assert_true(Engine.solved_map[1].perfect, "Level 1 without hints must be marked PERFECT ★")
-
--- Test hint reveal
-Engine:loadLevel(2)
-assert_false(Engine.revealed_moves[1], "Move 1 starts unrevealed")
-Engine:revealMove(1)
-assert_true(Engine.revealed_moves[1], "Move 1 must be revealed")
-assert_true(Engine.hints_used, "Hints used must be true after revealing move")
 
 -- 9. Memory & Playthrough Stress Test (Simulate All 550 Levels in a Loop)
 print("\n[+] Stress Testing Memory & Garbage Collection (All 550 Levels End-to-End)...")
@@ -198,10 +212,10 @@ for lvl = 1, #Puzzles do
     Engine:loadLevel(lvl)
     local sol = Engine.puzzle.solution
     -- Play full solution
-    Engine.row_inputs[1] = sol[2]
-    Engine.row_inputs[2] = sol[3]
-    Engine.row_inputs[3] = sol[4]
-    Engine:checkSolvedStatus()
+    for step = 1, 4 do
+        Engine.current_input = sol[step + 1]
+        Engine:checkAutoSubmit()
+    end
     assert_true(Engine.is_solved, "Level " .. lvl .. " must solve correctly")
     assert_true(Engine.solved_map[lvl].solved, "Level " .. lvl .. " recorded in storage")
 end
