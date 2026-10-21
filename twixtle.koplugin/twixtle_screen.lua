@@ -25,6 +25,7 @@ local InfoMessage = require("ui/widget/infomessage")
 local Menu = require("ui/widget/menu")
 local Size = require("ui/size")
 local TextWidget = require("ui/widget/textwidget")
+local TextViewer = require("ui/widget/textviewer")
 local UIManager = require("ui/uimanager")
 local VerticalGroup = require("ui/widget/verticalgroup")
 local VerticalSpan = require("ui/widget/verticalspan")
@@ -151,6 +152,21 @@ function TwixtleScreen:buildUI()
     btn_reset[1].background = Blitbuffer.COLOR_GRAY_E
     btn_reset.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
 
+    local btn_how_to_play = Button:new{
+        text = " ? HOW TO PLAY ",
+        text_font_face = "tfont",
+        text_font_size = 14,
+        text_font_bold = true,
+        bordersize = 1,
+        radius = 4,
+        padding = 5,
+        callback = function()
+            self:showHowToPlay()
+        end,
+    }
+    btn_how_to_play[1].background = Blitbuffer.COLOR_GRAY_E
+    btn_how_to_play.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
+
     local btn_exit = Button:new{
         text = " ✕ EXIT ",
         text_font_face = "tfont",
@@ -168,6 +184,8 @@ function TwixtleScreen:buildUI()
 
     local header_right = HorizontalGroup:new{
         btn_reset,
+        HorizontalSpan:new{ width = 6 },
+        btn_how_to_play,
         HorizontalSpan:new{ width = 6 },
         btn_exit,
     }
@@ -751,6 +769,62 @@ function TwixtleScreen:showVictoryDialog()
         },
     }
     UIManager:show(dialog)
+end
+
+function TwixtleScreen:showHowToPlay()
+    local help_text = [[GOAL:
+Transform the START word into the END word in exactly 4 moves, using each transformation type once (in any order).
+
+THE 4 MOVE TYPES:
+
+1. ANAGRAM
+Rearrange all letters of the current word to form a different valid word.
+• Example: HEART ➔ EARTH
+
+2. COMPOUND
+Chain with a word that joins with the current word to form a single, closed compound word (preceding or following).
+• Example: SEA ➔ HORSE (seahorse)
+• Example: BACK ➔ PACK (backpack)
+
+3. HOMOPHONE
+Change to a word that sounds identical when spoken, but is spelled differently.
+• Example: SEA ➔ SEE
+• Example: THYME ➔ TIME
+
+4. VERB FORM
+Switch to another tense or inflection of the same verb.
+• Example: WRITE ➔ WROTE / WRITTEN / WRITING
+• Example: WALK ➔ WALKED
+
+GAMEPLAY & CONTROLS:
+• Select Action: Tap an action pill (Anagram, Compound, Homophone, Verb) before entering your word.
+• Auto-Fill: The 4th move automatically receives the remaining transformation type.
+• Submit: Type your guess on the keyboard and press ENTER (↵). If the word does not exist in the dictionary or the transition is invalid, the input box resets.
+• Undo: Tap UNDO to step back to the previous word.
+• Hint: Tap HINT to reveal the starting letter of the target word.
+• No Repeats: A word cannot appear more than once in the chain.]]
+
+    local viewer
+    viewer = TextViewer:new{
+        title = _("How to Play Twixtle"),
+        text = help_text,
+        show_menu = false,
+        text_type = "general",
+        text_font_size = 16,
+        width = math.floor(Screen:getWidth() * 0.92),
+        height = math.floor(Screen:getHeight() * 0.88),
+        buttons_table = {
+            {
+                {
+                    text = _("Close"),
+                    callback = function()
+                        UIManager:close(viewer)
+                    end,
+                }
+            }
+        }
+    }
+    UIManager:show(viewer)
 end
 
 return TwixtleScreen
