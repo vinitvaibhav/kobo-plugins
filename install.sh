@@ -93,6 +93,7 @@ if [ "$TARGET" = "all" ] || [ "$TARGET" = "twixtle" ]; then
     cp "$SCRIPT_DIR/twixtle.koplugin/storage.lua" "$STANDALONE_DIR/"
     cp "$SCRIPT_DIR/twixtle.koplugin/twixtle_screen.lua" "$STANDALONE_DIR/"
     cp "$SCRIPT_DIR/twixtle.koplugin/README.md" "$STANDALONE_DIR/"
+    cp -r "$SCRIPT_DIR/twixtle.koplugin/fonts" "$STANDALONE_DIR/"
 
     # 2. NickelMenu Shortcut (.adds/nm/twixtle)
     echo "  🔘 Configuring NickelMenu direct shortcut in: $NM_DIR/twixtle"
@@ -117,6 +118,7 @@ EOF
     cp "$SCRIPT_DIR/twixtle.koplugin/storage.lua" "$TWIXTLE_DEST/"
     cp "$SCRIPT_DIR/twixtle.koplugin/twixtle_screen.lua" "$TWIXTLE_DEST/"
     cp "$SCRIPT_DIR/twixtle.koplugin/README.md" "$TWIXTLE_DEST/"
+    cp -r "$SCRIPT_DIR/twixtle.koplugin/fonts" "$TWIXTLE_DEST/"
 
     if command -v dot_clean >/dev/null 2>&1; then
         dot_clean "$STANDALONE_DIR"

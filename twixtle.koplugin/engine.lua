@@ -28,6 +28,7 @@ local Engine = {
 }
 
 function Engine:init(plugin_dir, settings_path)
+    self.plugin_dir = plugin_dir
     Dictionary:init(plugin_dir)
     Storage:init(settings_path)
 
@@ -39,8 +40,14 @@ function Engine:init(plugin_dir, settings_path)
 end
 
 function Engine:loadLevel(level_num)
+    if not self.unlocked_level or self.unlocked_level < 1 then
+        self.unlocked_level = 1
+    end
     if level_num < 1 then level_num = 1 end
     if level_num > #Puzzles then level_num = #Puzzles end
+    if level_num > self.unlocked_level then
+        level_num = self.unlocked_level
+    end
 
     self.current_level = level_num
     Storage:save("current_level", self.current_level)

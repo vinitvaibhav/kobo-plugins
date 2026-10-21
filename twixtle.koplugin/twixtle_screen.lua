@@ -21,6 +21,7 @@ local Geom = require("ui/geometry")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan = require("ui/widget/horizontalspan")
 local InputContainer = require("ui/widget/container/inputcontainer")
+local InfoMessage = require("ui/widget/infomessage")
 local Menu = require("ui/widget/menu")
 local Size = require("ui/size")
 local TextWidget = require("ui/widget/textwidget")
@@ -75,7 +76,7 @@ end
 function TwixtleScreen:buildUI()
     local screen_w = self.dimen.w
     local screen_h = self.dimen.h
-    local pad_x = 28
+    local pad_x = 18
     local board_w = screen_w - (pad_x * 2)
     local p = Engine.puzzle
 
@@ -83,72 +84,91 @@ function TwixtleScreen:buildUI()
     local is_solved = not not (Engine.solved_map[Engine.current_level] and Engine.solved_map[Engine.current_level].solved)
     local is_perfect = is_solved and Engine.solved_map[Engine.current_level].perfect
 
-    local title_str = "TWIXTLE #" .. Engine.current_level
-    if is_perfect then
-        title_str = title_str .. " ★"
-    elseif is_solved then
-        title_str = title_str .. " ✓"
+    -- Cursive Title: "Twixtle"
+    local cursive_face
+    local plugin_dir = Engine.plugin_dir or "plugins/twixtle.koplugin"
+    local font_candidate = plugin_dir .. "/fonts/DancingScript.ttf"
+    if not font_candidate:match("^/") and not font_candidate:match("^%./") then
+        font_candidate = "./" .. font_candidate
+    end
+    local ok_c, res_c = pcall(function()
+        return Font:getFace(font_candidate, 38)
+    end)
+    if ok_c and res_c then
+        cursive_face = res_c
+    else
+        cursive_face = Font:getFace("tfont", 28)
     end
 
     local title_widget = TextWidget:new{
-        text = title_str,
-        face = Font:getFace("tfont", 26),
+        text = "Twixtle",
+        face = cursive_face,
         bold = true,
     }
 
-    local level_tag = TextWidget:new{
-        text = string.format("Level %d / %d", Engine.current_level, #Puzzles),
-        face = Font:getFace("smallinfofont", 16),
-        fgcolor = Blitbuffer.COLOR_DARK_GRAY,
-    }
+    -- Merged Level Button: "# 5 ▾" (opens level selector directly)
+    local lvl_str = string.format(" #%d ▾ ", Engine.current_level)
+    if is_perfect then
+        lvl_str = string.format(" #%d ★ ▾ ", Engine.current_level)
+    elseif is_solved then
+        lvl_str = string.format(" #%d ✓ ▾ ", Engine.current_level)
+    end
 
-    local header_left = VerticalGroup:new{
+    local btn_level = Button:new{
+        text = lvl_str,
+        text_font_face = "tfont",
+        text_font_size = 17,
+        text_font_bold = true,
+        bordersize = 1,
+        radius = 4,
+        padding = 5,
+        callback = function()
+            self:openLevelSelectMenu()
+        end,
+    }
+    btn_level[1].background = Blitbuffer.COLOR_GRAY_E
+    btn_level.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
+
+    local header_left = HorizontalGroup:new{
         title_widget,
-        level_tag,
+        HorizontalSpan:new{ width = 10 },
+        btn_level,
     }
 
     local btn_reset = Button:new{
         text = " ↺ RESET ",
         text_font_face = "tfont",
-        text_font_size = 18,
-        bordersize = 2,
-        radius = 6,
-        padding = 8,
+        text_font_size = 14,
+        text_font_bold = true,
+        bordersize = 1,
+        radius = 4,
+        padding = 5,
         callback = function()
             Engine:resetLevel()
             self:refresh()
         end,
     }
-
-    local btn_select = Button:new{
-        text = " ▦ SELECT ",
-        text_font_face = "tfont",
-        text_font_size = 18,
-        bordersize = 2,
-        radius = 6,
-        padding = 8,
-        callback = function()
-            self:openLevelSelectMenu()
-        end,
-    }
+    btn_reset[1].background = Blitbuffer.COLOR_GRAY_E
+    btn_reset.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
 
     local btn_exit = Button:new{
         text = " ✕ EXIT ",
         text_font_face = "tfont",
-        text_font_size = 18,
-        bordersize = 2,
-        radius = 6,
-        padding = 8,
+        text_font_size = 14,
+        text_font_bold = true,
+        bordersize = 1,
+        radius = 4,
+        padding = 5,
         callback = function()
             self:onClose()
         end,
     }
+    btn_exit[1].background = Blitbuffer.COLOR_GRAY_E
+    btn_exit.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
 
     local header_right = HorizontalGroup:new{
         btn_reset,
-        HorizontalSpan:new{ width = 8 },
-        btn_select,
-        HorizontalSpan:new{ width = 8 },
+        HorizontalSpan:new{ width = 6 },
         btn_exit,
     }
 
@@ -156,7 +176,7 @@ function TwixtleScreen:buildUI()
     local header_bar = HorizontalGroup:new{
         HorizontalSpan:new{ width = pad_x },
         header_left,
-        HorizontalSpan:new{ width = math.max(10, header_gap) },
+        HorizontalSpan:new{ width = math.max(6, header_gap) },
         header_right,
         HorizontalSpan:new{ width = pad_x },
     }
@@ -362,16 +382,19 @@ function TwixtleScreen:buildUI()
     local btn_undo = Button:new{
         text = " [ UNDO ] ",
         text_font_face = "tfont",
-        text_font_size = 19,
+        text_font_size = 15,
         text_font_bold = true,
-        bordersize = 2,
-        radius = 6,
-        padding = 10,
+        bordersize = 1,
+        radius = 4,
+        padding = 5,
+        enabled = (#Engine.current_input > 0 or Engine.active_step > 1) and not Engine.is_solved,
         callback = function()
             Engine:undo()
             self:refresh()
         end,
     }
+    btn_undo[1].background = Blitbuffer.COLOR_GRAY_E
+    btn_undo.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
 
     local status_str = "[ Select rule above & type word, then tap ↵ ENTER ]"
     local status_color = Blitbuffer.COLOR_DARK_GRAY
@@ -403,16 +426,19 @@ function TwixtleScreen:buildUI()
     local btn_hint = Button:new{
         text = " [ HINT ] ",
         text_font_face = "tfont",
-        text_font_size = 19,
+        text_font_size = 15,
         text_font_bold = true,
-        bordersize = 2,
-        radius = 6,
-        padding = 10,
+        bordersize = 1,
+        radius = 4,
+        padding = 5,
+        enabled = not Engine.is_solved,
         callback = function()
             Engine:hint()
             self:refresh()
         end,
     }
+    btn_hint[1].background = Blitbuffer.COLOR_GRAY_E
+    btn_hint.label_widget.fgcolor = Blitbuffer.COLOR_BLACK
 
     local bar_gap = board_w - btn_undo:getSize().w - status_widget:getSize().w - btn_hint:getSize().w
     local action_bar = HorizontalGroup:new{
@@ -425,11 +451,26 @@ function TwixtleScreen:buildUI()
         HorizontalSpan:new{ width = pad_x },
     }
 
-    -- 4. Full Width Touch Keyboard Pinned to Bottom
+    -- 4. Dynamic Height Calculation for Keyboard
+    local top_section = VerticalGroup:new{
+        VerticalSpan:new{ width = 10 },
+        header_bar,
+        VerticalSpan:new{ width = 14 },
+        board_group,
+    }
+
+    local top_h = top_section:getSize().h
+    local action_bar_h = action_bar:getSize().h
+    local bottom_pad = 16
+    local action_to_kb_gap = 12
+    local min_flex_spacer = 20
+
     local kb_pad_x = 8
     local kb_w = screen_w - (kb_pad_x * 2)
     local gap = 6
-    local key_h = 74
+
+    local available_for_kb = screen_h - top_h - min_flex_spacer - action_bar_h - action_to_kb_gap - bottom_pad
+    local key_h = math.min(100, math.max(76, math.floor((available_for_kb - 2 * gap) / 3)))
 
     -- Row 1: 10 keys (Q W E R T Y U I O P)
     local r1_keys = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" }
@@ -439,7 +480,7 @@ function TwixtleScreen:buildUI()
         table.insert(r1_widgets, Button:new{
             text = k,
             text_font_face = "tfont",
-            text_font_size = 26,
+            text_font_size = 28,
             text_font_bold = true,
             width = r1_key_w,
             height = key_h,
@@ -467,7 +508,7 @@ function TwixtleScreen:buildUI()
         table.insert(r2_widgets, Button:new{
             text = k,
             text_font_face = "tfont",
-            text_font_size = 26,
+            text_font_size = 28,
             text_font_bold = true,
             width = r2_key_w,
             height = key_h,
@@ -494,7 +535,7 @@ function TwixtleScreen:buildUI()
     local btn_back = Button:new{
         text = " ⌫ ",
         text_font_face = "tfont",
-        text_font_size = 24,
+        text_font_size = 26,
         text_font_bold = true,
         width = side_w,
         height = key_h,
@@ -536,7 +577,7 @@ function TwixtleScreen:buildUI()
         table.insert(r3_widgets, Button:new{
             text = k,
             text_font_face = "tfont",
-            text_font_size = 26,
+            text_font_size = 28,
             text_font_bold = true,
             width = r3_let_w,
             height = key_h,
@@ -562,22 +603,13 @@ function TwixtleScreen:buildUI()
         row3_group,
     }
 
-    -- 5. Full Screen Assembly with Dynamic Spacing
-    local top_section = VerticalGroup:new{
-        VerticalSpan:new{ width = 14 },
-        header_bar,
-        VerticalSpan:new{ width = 16 },
-        board_group,
-    }
-
     local bottom_section = VerticalGroup:new{
         action_bar,
-        VerticalSpan:new{ width = 12 },
+        VerticalSpan:new{ width = action_to_kb_gap },
         keyboard_group,
-        VerticalSpan:new{ width = 4 },
+        VerticalSpan:new{ width = bottom_pad },
     }
 
-    local top_h = top_section:getSize().h
     local bot_h = bottom_section:getSize().h
     local flex_spacer_h = math.max(10, screen_h - top_h - bot_h)
 
@@ -623,19 +655,33 @@ function TwixtleScreen:openLevelSelectMenu()
         local is_unlocked = i <= Engine.unlocked_level
         local solved_entry = Engine.solved_map[i]
         local prefix = ""
+        local tag = ""
         if not is_unlocked then
             prefix = "🔒 "
+            tag = "  [Locked]"
         elseif solved_entry and solved_entry.solved then
-            prefix = solved_entry.perfect and "★ ✓ " or "✓ "
+            prefix = solved_entry.perfect and "★ " or "✓ "
+            tag = solved_entry.perfect and "  [★ Perfect]" or "  [✓ Solved]"
+        elseif i == Engine.current_level then
+            prefix = "▶ "
+            tag = "  [Current]"
         else
-            prefix = "   "
+            prefix = "○ "
+            tag = "  [Unlocked]"
         end
 
         local lvl_num = i
         table.insert(items, {
-            text = string.format("%sLevel %d: %s ➔ %s", prefix, i, Puzzles[i].start:upper(), Puzzles[i]["end"]:upper()),
+            text = string.format("%sLevel %d: %s ➔ %s%s", prefix, i, Puzzles[i].start:upper(), Puzzles[i]["end"]:upper(), tag),
             enabled = is_unlocked,
             callback = function()
+                if not is_unlocked then
+                    UIManager:show(InfoMessage:new{
+                        text = string.format(_("Level %d is locked!\nSolve Level %d first to unlock it."), lvl_num, lvl_num - 1),
+                        timeout = 2,
+                    })
+                    return
+                end
                 UIManager:close(self.level_menu)
                 Engine:loadLevel(lvl_num)
                 self:refresh()
@@ -644,7 +690,7 @@ function TwixtleScreen:openLevelSelectMenu()
     end
 
     self.level_menu = Menu:new{
-        title = string.format("Select Level (1 - %d)", #Puzzles),
+        title = string.format(_("Select Level (1 - %d)"), #Puzzles),
         item_table = items,
         width = math.floor(Screen:getWidth() * 0.9),
         height = math.floor(Screen:getHeight() * 0.85),

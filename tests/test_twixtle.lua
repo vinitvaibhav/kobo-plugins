@@ -216,9 +216,17 @@ assert_equal(Engine.row_inputs[3], "", "Row 3 cleared on reset")
 assert_equal(Engine.chosen_moves[1], nil, "Move 1 cleared on reset")
 assert_false(Engine.is_solved, "Solved flag cleared on reset")
 
+-- Test 8j: Locked Level Enforcement
+Engine.unlocked_level = 1
+Engine:loadLevel(10)
+assert_equal(Engine.current_level, 1, "Locked level 10 must not be loaded when unlocked_level is 1")
+
 -- 9. Stress Testing All 550 Levels Playthrough
 print("\n[+] Stress Testing All 550 Levels Playthrough in Engine v4...")
+Engine.solved_map = {}
+Engine.unlocked_level = 1
 for i = 1, #Puzzles do
+    assert_equal(Engine.unlocked_level, i, "Level " .. i .. " must be unlocked")
     Engine:loadLevel(i)
     local p = Puzzles[i]
     -- Step 1
@@ -236,6 +244,7 @@ for i = 1, #Puzzles do
 
     assert_true(Engine.is_solved, "Level " .. i .. " must be solved")
     assert_equal(Engine.chosen_moves[4], p.moves[4], "4th move matches puzzle move 4")
+    assert_equal(Engine.unlocked_level, math.min(i + 1, #Puzzles), "Next level unlocked")
 end
 print(string.format("[✓] Successfully played through all %d levels with 0 errors!", #Puzzles))
 

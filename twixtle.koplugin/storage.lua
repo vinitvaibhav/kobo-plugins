@@ -44,6 +44,7 @@ end
 function Storage:save(key, val)
     if self.settings then
         self.settings:saveSetting(key, val)
+        self.settings:flush()
     elseif self.data then
         self.data[key] = val
         local f = io.open(self.settings_file, "w")
